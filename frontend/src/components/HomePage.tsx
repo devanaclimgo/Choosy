@@ -49,7 +49,7 @@ function LandingContent() {
             <Link to="/criar-sala">
               <Button
                 size="lg"
-                className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
+                className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-shadow hover:scale-[1.02]"
               >
                 Criar sala
               </Button>
