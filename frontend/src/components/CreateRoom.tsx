@@ -16,7 +16,7 @@ function CreateRoomContent() {
     e.preventDefault()
     if (name.trim()) {
       createRoom(name.trim())
-      navigate("/sala")
+      navigate("/sala-de-espera")
     }
   }
 
