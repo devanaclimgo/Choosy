@@ -6,7 +6,7 @@ export function Navbar() {
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 px-4 py-4"
+      className="fixed top-0 left-0 right-0 z-50 px-4 py-4 transition-all duration-300 backdrop-blur-sm bg-white/30"
     >
       <div className="max-w-md mx-auto">
         <Link to="/" className="flex items-center gap-2">
