@@ -41,14 +41,6 @@
   --sidebar-ring: oklch(0.55 0.25 300);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
 /* Gradient utilities for Choosy */
 .gradient-primary {
   background: linear-gradient(
