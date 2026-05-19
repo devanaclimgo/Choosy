@@ -14,6 +14,7 @@ Rails.application.routes.draw do
         end
       end
       resources :votes, only: [:create]
+      resources :food_options, only: [:index]
     end
   end
 end
