@@ -56,7 +56,7 @@ const FOOD_OPTIONS: FoodOption[] = [
   { id: "10", name: "Açaí", image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&h=400&fit=crop", category: "brasileira" },
   { id: "11", name: "Pastel", image: "../pastel.jpg", category: "brasileira" },
   { id: "12", name: "Sanduíche", image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=400&fit=crop", category: "lanche" },
-  { id: "13", name: "Sorvete", image: "../sorvete.jpg", category: "sorvete" },
+  { id: "13", name: "Sorvete", image: "../sorvete.jpg", category: "italiana" },
   { id: "14", name: "Ramen", image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=400&fit=crop", category: "japonesa" },
 ]
 
