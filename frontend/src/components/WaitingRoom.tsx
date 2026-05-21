@@ -1,65 +1,40 @@
-import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useNavigate, Link } from "react-router-dom"
-import { Copy, Check, Home, Users } from "lucide-react"
-import { Button } from "./ui/button"
-import { useGame } from "../lib/game-context"
-
-const MOCK_PLAYERS = [
-  { id: "2", name: "Maria", avatar: "🍔" },
-  { id: "3", name: "João", avatar: "🍣" },
-  { id: "4", name: "Ana", avatar: "🌮" },
-]
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, Link } from "react-router-dom";
+import { Copy, Check, Home, Users } from "lucide-react";
+import { Button } from "./ui/button";
+import { useGame } from "../lib/game-context";
 
 function WaitingRoomContent() {
-  const navigate = useNavigate()
-  const { room, currentPlayer, startVoting } = useGame()
-  const [copied, setCopied] = useState(false)
-  const [mockPlayersCount, setMockPlayersCount] = useState(0)
-
-  // Simulate players joining
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMockPlayersCount((prev) => {
-        if (prev < MOCK_PLAYERS.length) {
-          return prev + 1
-        }
-        clearInterval(interval)
-        return prev
-      })
-    }, 2000)
-
-    return () => clearInterval(interval)
-  }, [])
+  const navigate = useNavigate();
+  const { room, currentPlayer, startVoting } = useGame();
+  const [copied, setCopied] = useState(false);
 
   const handleCopyCode = async () => {
     if (room?.code) {
-      await navigator.clipboard.writeText(room.code)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      await navigator.clipboard.writeText(room.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
-  }
+  };
 
   const handleStartVoting = () => {
-    startVoting()
-    navigate("/votar")
-  }
+    startVoting();
+    navigate("/votar");
+  };
 
   // Redirect if no room
   useEffect(() => {
     if (!room) {
-      navigate("/criar-sala")
+      navigate("/criar-sala");
     }
-  }, [room, navigate])
+  }, [room, navigate]);
 
   if (!room || !currentPlayer) {
-    return null
+    return null;
   }
 
-  const allPlayers = [
-    currentPlayer,
-    ...MOCK_PLAYERS.slice(0, mockPlayersCount),
-  ]
+  const allPlayers = [currentPlayer];
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
@@ -78,7 +53,9 @@ function WaitingRoomContent() {
           </Link>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Users className="w-4 h-4" />
-            <span className="text-sm font-medium">{allPlayers.length} jogadores</span>
+            <span className="text-sm font-medium">
+              {allPlayers.length} jogadores
+            </span>
           </div>
         </div>
       </motion.header>
@@ -154,23 +131,23 @@ function WaitingRoomContent() {
                     </motion.div>
                   ))}
                   {/* Empty slots */}
-                  {Array.from({ length: Math.max(0, 4 - allPlayers.length) }).map(
-                    (_, i) => (
-                      <motion.div
-                        key={`empty-${i}`}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="flex flex-col items-center"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-muted/50 border-2 border-dashed border-border flex items-center justify-center mb-1">
-                          <span className="text-muted-foreground text-lg">?</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                          Aguardando...
-                        </span>
-                      </motion.div>
-                    )
-                  )}
+                  {Array.from({
+                    length: Math.max(0, 4 - allPlayers.length),
+                  }).map((_, i) => (
+                    <motion.div
+                      key={`empty-${i}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="w-14 h-14 rounded-2xl bg-muted/50 border-2 border-dashed border-border flex items-center justify-center mb-1">
+                        <span className="text-muted-foreground text-lg">?</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        Aguardando...
+                      </span>
+                    </motion.div>
+                  ))}
                 </AnimatePresence>
               </div>
             </div>
@@ -222,11 +199,9 @@ function WaitingRoomContent() {
         </div>
       </motion.div>
     </main>
-  )
+  );
 }
 
 export default function WaitingRoomPage() {
-  return (
-      <WaitingRoomContent />
-  )
+  return <WaitingRoomContent />;
 }
