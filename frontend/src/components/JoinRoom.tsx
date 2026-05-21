@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
-import { GameProvider, useGame } from "../lib/game-context"
+import { useGame } from "../lib/game-context"
 
 function JoinRoomContent() {
   const [code, setCode] = useState("")
@@ -121,8 +121,6 @@ function JoinRoomContent() {
 
 export default function JoinRoomPage() {
   return (
-    <GameProvider>
       <JoinRoomContent />
-    </GameProvider>
   )
 }

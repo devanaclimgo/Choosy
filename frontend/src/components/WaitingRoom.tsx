@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useNavigate, Link } from "react-router-dom"
 import { Copy, Check, Home, Users } from "lucide-react"
 import { Button } from "./ui/button"
-import { GameProvider, useGame } from "../lib/game-context"
+import { useGame } from "../lib/game-context"
 
 const MOCK_PLAYERS = [
   { id: "2", name: "Maria", avatar: "🍔" },
@@ -227,8 +227,6 @@ function WaitingRoomContent() {
 
 export default function WaitingRoomPage() {
   return (
-    <GameProvider>
       <WaitingRoomContent />
-    </GameProvider>
   )
 }

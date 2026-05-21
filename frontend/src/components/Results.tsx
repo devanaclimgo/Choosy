@@ -5,7 +5,7 @@ import { Home, RotateCcw, Trophy, Medal } from "lucide-react"
 import Img from "react-cool-img"
 import confetti from "canvas-confetti"
 import { Button } from "./ui/button"
-import { GameProvider, useGame, type FoodOption } from "../lib/game-context"
+import { useGame, type FoodOption } from "../lib/game-context"
 
 // Simulate votes for demo
 function simulateVotes(foods: { food: FoodOption; votes: number }[]) {
@@ -282,8 +282,6 @@ function ResultsContent() {
 
 export default function ResultsPage() {
   return (
-    <GameProvider>
       <ResultsContent />
-    </GameProvider>
   )
 }

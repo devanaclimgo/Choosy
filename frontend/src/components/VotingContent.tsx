@@ -5,7 +5,7 @@ import { Home, RotateCcw, X, Check } from "lucide-react"
 import Img from "react-cool-img"
 import { Button } from "./ui/button"
 import { Progress } from "./ui/progress"
-import { GameProvider, useGame } from "../lib/game-context"
+import { useGame } from "../lib/game-context"
 
 function VotingContent() {
   const navigate = useNavigate()
@@ -173,8 +173,6 @@ function VotingContent() {
 
 export default function VotingPage() {
   return (
-    <GameProvider>
       <VotingContent />
-    </GameProvider>
   )
 }

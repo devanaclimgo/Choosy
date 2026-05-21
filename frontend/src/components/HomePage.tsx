@@ -3,7 +3,6 @@ import { Link } from "react-router-dom"
 import { Navbar } from "./navbar"
 import { FeatureCard } from "./feature-card"
 import { Button } from "./ui/button"
-import { GameProvider } from "../lib/game-context"
 
 function LandingContent() {
   return (
@@ -121,8 +120,6 @@ function LandingContent() {
 
 export default function Home() {
   return (
-    <GameProvider>
       <LandingContent />
-    </GameProvider>
   )
 }

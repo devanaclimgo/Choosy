@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
-import { GameProvider, useGame } from "../lib/game-context"
+import { useGame } from "../lib/game-context"
 
 function CreateRoomContent() {
   const [name, setName] = useState("")
@@ -97,8 +97,6 @@ function CreateRoomContent() {
 
 export default function CreateRoomPage() {
   return (
-    <GameProvider>
       <CreateRoomContent />
-    </GameProvider>
   )
 }
