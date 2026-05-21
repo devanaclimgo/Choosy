@@ -12,10 +12,10 @@ function JoinRoomContent() {
   const navigate = useNavigate()
   const { joinRoom } = useGame()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (code.trim() && name.trim()) {
-      const success = joinRoom(code.trim().toUpperCase(), name.trim())
+      const success = await joinRoom(code.trim().toUpperCase(), name.trim())
       if (success) {
         navigate("/votar")
       }
