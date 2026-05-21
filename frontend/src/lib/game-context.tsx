@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { createRoomRequest, joinRoomRequest } from "../services/room_service";
-
+import { createRoomRequest, getRoomRequest, joinRoomRequest } from "../services/room_service";
 export interface Player {
   id: string;
   name: string;
@@ -34,7 +33,7 @@ interface GameContextType {
   room: Room | null;
   setRoom: (room: Room | null) => void;
   createRoom: (playerName: string) => void;
-  joinRoom: (code: string, playerName: string) => boolean;
+  joinRoom: (code: string, playerName: string) => Promise<boolean>;
   startVoting: () => void;
   submitVote: (foodId: string, vote: boolean) => void;
   resetVoting: () => void;
@@ -135,10 +134,6 @@ const FOOD_OPTIONS: FoodOption[] = [
 
 const AVATARS = ["🍕", "🍔", "🍣", "🌮", "🥗", "🍜", "🥩", "🍝"];
 
-function generatePlayerId(): string {
-  return Math.random().toString(36).substring(2, 9);
-}
-
 export function GameProvider({ children }: { children: ReactNode }) {
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
@@ -166,33 +161,37 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setRoom(room);
   };
 
-  const joinRoom = (code: string, playerName: string): boolean => {
-    // In a real app, this would validate against a backend
-    // For now, we'll simulate joining
-    const playerId = generatePlayerId();
-    const avatar = AVATARS[Math.floor(Math.random() * AVATARS.length)];
-    const player: Player = { id: playerId, name: playerName, avatar };
+  const joinRoom = async (
+    code: string,
+    playerName: string,
+  ): Promise<boolean> => {
+    try {
+      const roomResponse = await getRoomRequest(code);
 
-    if (room && room.code === code) {
-      setRoom({
-        ...room,
-        players: [...room.players, player],
-      });
+      const playerResponse = await joinRoomRequest(code, playerName);
+
+      const player: Player = {
+        id: playerResponse.id.toString(),
+        name: playerResponse.name,
+        avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)],
+      };
+
       setCurrentPlayer(player);
+
+      setRoom({
+        code: roomResponse.code,
+        players: [...roomResponse.players, player],
+        currentFoodIndex: 0,
+        votes: {},
+        isVotingStarted: roomResponse.status === "voting",
+      });
+
       return true;
+    } catch (error) {
+      console.error(error);
+
+      return false;
     }
-
-    const newRoom: Room = {
-      code: code.toUpperCase(),
-      players: [player],
-      currentFoodIndex: 0,
-      votes: {},
-      isVotingStarted: false,
-    };
-
-    setCurrentPlayer(player);
-    setRoom(newRoom);
-    return true;
   };
 
   const startVoting = () => {
