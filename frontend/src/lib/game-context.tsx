@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { createRoomRequest, getRoomRequest, joinRoomRequest } from "../services/room_service";
+import {
+  startVotingRequest,
+  createRoomRequest,
+  getRoomRequest,
+  joinRoomRequest,
+} from "../services/room_service";
 export interface Player {
   id: string;
   name: string;
@@ -34,6 +39,7 @@ interface GameContextType {
   setRoom: (room: Room | null) => void;
   createRoom: (playerName: string) => void;
   joinRoom: (code: string, playerName: string) => Promise<boolean>;
+  refreshRoom: () => Promise<void>;
   startVoting: () => void;
   submitVote: (foodId: string, vote: boolean) => void;
   resetVoting: () => void;
@@ -161,6 +167,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setRoom(room);
   };
 
+  const refreshRoom = async () => {
+    if (!room) return;
+
+    const updatedRoom = await getRoomRequest(room.code);
+
+    setRoom((prev) => ({
+      ...prev!,
+      players: updatedRoom.players,
+      isVotingStarted: updatedRoom.status === "voting",
+    }));
+  };
+
   const joinRoom = async (
     code: string,
     playerName: string,
@@ -194,15 +212,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const startVoting = () => {
-    if (room) {
-      setRoom({
-        ...room,
-        isVotingStarted: true,
-        currentFoodIndex: 0,
-        votes: {},
-      });
-    }
+  const startVoting = async () => {
+    if (!room) return;
+
+    await startVotingRequest(room.code);
+
+    setRoom({
+      ...room,
+      isVotingStarted: true,
+    });
   };
 
   const submitVote = (foodId: string, vote: boolean) => {
@@ -255,6 +273,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         room,
         setRoom,
         createRoom,
+        refreshRoom,
         joinRoom,
         startVoting,
         submitVote,
