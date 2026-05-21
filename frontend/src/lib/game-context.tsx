@@ -54,9 +54,9 @@ const FOOD_OPTIONS: FoodOption[] = [
   { id: "8", name: "Comida Mexicana", image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=400&fit=crop", category: "mexicana" },
   { id: "9", name: "Poke", image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=400&fit=crop", category: "havaiana" },
   { id: "10", name: "Açaí", image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&h=400&fit=crop", category: "brasileira" },
-  { id: "11", name: "Pastel", image: "https://images.unsplash.com/photo-1601000938259-9e92002320b2?w=400&h=400&fit=crop", category: "brasileira" },
+  { id: "11", name: "Pastel", image: "../pastel.jpg", category: "brasileira" },
   { id: "12", name: "Sanduíche", image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=400&fit=crop", category: "lanche" },
-  { id: "13", name: "Comida Árabe", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&h=400&fit=crop", category: "árabe" },
+  { id: "13", name: "Sorvete", image: "../sorvete.jpg", category: "sorvete" },
   { id: "14", name: "Ramen", image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=400&fit=crop", category: "japonesa" },
 ]
 
