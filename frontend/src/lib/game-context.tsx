@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   startVotingRequest,
   createRoomRequest,
@@ -32,7 +38,7 @@ export interface Room {
   isVotingStarted: boolean;
 }
 
-interface GameContextType {
+export interface GameContextType {
   currentPlayer: Player | null;
   setCurrentPlayer: (player: Player | null) => void;
   room: Room | null;
@@ -143,6 +149,28 @@ const AVATARS = ["🍕", "🍔", "🍣", "🌮", "🥗", "🍜", "🥩", "🍝"]
 export function GameProvider({ children }: { children: ReactNode }) {
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshRoom();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const savedRoom = localStorage.getItem("choosy-room");
+
+    const savedPlayer = localStorage.getItem("choosy-player");
+
+    if (savedRoom) {
+      setRoom(JSON.parse(savedRoom));
+    }
+
+    if (savedPlayer) {
+      setCurrentPlayer(JSON.parse(savedPlayer));
+    }
+  }, []);
 
   const createRoom = async (playerName: string) => {
     const roomResponse = await createRoomRequest();
