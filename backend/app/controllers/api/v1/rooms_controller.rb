@@ -1,4 +1,4 @@
-class Api::V1::RoomsController < ApplicationController
+class Api::V1::RoomsController < Api::V1::BaseController
   before_action :set_room, only: [
     :show,
     :join,
