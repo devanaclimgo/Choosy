@@ -10,7 +10,11 @@ import {
   createRoomRequest,
   getRoomRequest,
   joinRoomRequest,
+  getResultsRequest,
 } from "../services/room_service";
+
+import { createVote } from "../services/vote_service";
+import { getFoodOptionsRequest } from "../services/food_service";
 export interface Player {
   id: string;
   name: string;
@@ -31,6 +35,7 @@ export interface Vote {
 }
 
 export interface Room {
+  id: string;
   code: string;
   players: Player[];
   currentFoodIndex: number;
@@ -50,105 +55,128 @@ export interface GameContextType {
   submitVote: (foodId: string, vote: boolean) => void;
   resetVoting: () => void;
   getFoodOptions: () => FoodOption[];
-  getResults: () => { food: FoodOption; votes: number }[];
+  getResults: () => Promise<{ food: FoodOption; votes: number }[]>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-const FOOD_OPTIONS: FoodOption[] = [
-  {
-    id: "1",
-    name: "Pizza",
-    image:
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop",
-    category: "italiana",
-  },
-  {
-    id: "2",
-    name: "Sushi",
-    image:
-      "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&h=400&fit=crop",
-    category: "japonesa",
-  },
-  {
-    id: "3",
-    name: "Hambúrguer",
-    image:
-      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=400&fit=crop",
-    category: "americana",
-  },
-  {
-    id: "4",
-    name: "Massas",
-    image:
-      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=400&fit=crop",
-    category: "italiana",
-  },
-  {
-    id: "5",
-    name: "Salada",
-    image:
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=400&fit=crop",
-    category: "saudável",
-  },
-  {
-    id: "6",
-    name: "Frutos do Mar",
-    image:
-      "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&h=400&fit=crop",
-    category: "frutos do mar",
-  },
-  {
-    id: "7",
-    name: "Churrasco",
-    image:
-      "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&h=400&fit=crop",
-    category: "brasileira",
-  },
-  {
-    id: "8",
-    name: "Comida Mexicana",
-    image:
-      "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=400&fit=crop",
-    category: "mexicana",
-  },
-  {
-    id: "9",
-    name: "Poke",
-    image:
-      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=400&fit=crop",
-    category: "havaiana",
-  },
-  {
-    id: "10",
-    name: "Açaí",
-    image:
-      "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&h=400&fit=crop",
-    category: "brasileira",
-  },
-  { id: "11", name: "Pastel", image: "../pastel.jpg", category: "brasileira" },
-  {
-    id: "12",
-    name: "Sanduíche",
-    image:
-      "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=400&fit=crop",
-    category: "lanche",
-  },
-  { id: "13", name: "Sorvete", image: "../sorvete.jpg", category: "italiana" },
-  {
-    id: "14",
-    name: "Ramen",
-    image:
-      "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=400&fit=crop",
-    category: "japonesa",
-  },
-];
+// const FOOD_OPTIONS: FoodOption[] = [
+//   {
+//     id: "1",
+//     name: "Pizza",
+//     image:
+//       "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop",
+//     category: "italiana",
+//   },
+//   {
+//     id: "2",
+//     name: "Sushi",
+//     image:
+//       "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&h=400&fit=crop",
+//     category: "japonesa",
+//   },
+//   {
+//     id: "3",
+//     name: "Hambúrguer",
+//     image:
+//       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=400&fit=crop",
+//     category: "americana",
+//   },
+//   {
+//     id: "4",
+//     name: "Massas",
+//     image:
+//       "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=400&fit=crop",
+//     category: "italiana",
+//   },
+//   {
+//     id: "5",
+//     name: "Salada",
+//     image:
+//       "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=400&fit=crop",
+//     category: "saudável",
+//   },
+//   {
+//     id: "6",
+//     name: "Frutos do Mar",
+//     image:
+//       "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&h=400&fit=crop",
+//     category: "frutos do mar",
+//   },
+//   {
+//     id: "7",
+//     name: "Churrasco",
+//     image:
+//       "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&h=400&fit=crop",
+//     category: "brasileira",
+//   },
+//   {
+//     id: "8",
+//     name: "Comida Mexicana",
+//     image:
+//       "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=400&fit=crop",
+//     category: "mexicana",
+//   },
+//   {
+//     id: "9",
+//     name: "Poke",
+//     image:
+//       "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=400&fit=crop",
+//     category: "havaiana",
+//   },
+//   {
+//     id: "10",
+//     name: "Açaí",
+//     image:
+//       "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&h=400&fit=crop",
+//     category: "brasileira",
+//   },
+//   { id: "11", name: "Pastel", image: "../pastel.jpg", category: "brasileira" },
+//   {
+//     id: "12",
+//     name: "Sanduíche",
+//     image:
+//       "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=400&fit=crop",
+//     category: "lanche",
+//   },
+//   { id: "13", name: "Sorvete", image: "../sorvete.jpg", category: "italiana" },
+//   {
+//     id: "14",
+//     name: "Ramen",
+//     image:
+//       "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=400&fit=crop",
+//     category: "japonesa",
+//   },
+// ];
 
-const AVATARS = ["🍕", "🍔", "🍣", "🌮", "🥗", "🍜", "🥩", "🍝", "🥘", "🧁", "🥞", "🍳", "🌯", "🫔", "🧋", "🍟", "🍗", "🍩", "🧀", "🫕", "🍙"];
+const AVATARS = [
+  "🍕",
+  "🍔",
+  "🍣",
+  "🌮",
+  "🥗",
+  "🍜",
+  "🥩",
+  "🍝",
+  "🥘",
+  "🧁",
+  "🥞",
+  "🍳",
+  "🌯",
+  "🫔",
+  "🧋",
+  "🍟",
+  "🍗",
+  "🍩",
+  "🧀",
+  "🫕",
+  "🍙",
+];
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
+  const [foodOptions, setFoodOptions] = useState<FoodOption[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -172,6 +200,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {
+    getFoodOptionsRequest().then((data: any[]) => {
+      setFoodOptions(
+        data.map((f: any) => ({
+          id: f.id.toString(),
+          name: f.name,
+          image: f.image_url,
+          category: f.category,
+        })),
+      );
+    });
+  }, []);
+
   const createRoom = async (playerName: string) => {
     const roomResponse = await createRoomRequest();
 
@@ -184,6 +225,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     };
 
     const room: Room = {
+      id: roomResponse.id.toString(),
       code: roomResponse.code,
       players: [player],
       currentFoodIndex: 0,
@@ -225,6 +267,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setCurrentPlayer(player);
 
       setRoom({
+        id: roomResponse.id.toString(),
         code: roomResponse.code,
         players: [...roomResponse.players, player],
         currentFoodIndex: 0,
@@ -251,22 +294,25 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const submitVote = (foodId: string, vote: boolean) => {
-    if (room && currentPlayer) {
-      const newVotes = { ...room.votes };
-      if (!newVotes[foodId]) {
-        newVotes[foodId] = [];
-      }
-      if (vote) {
-        newVotes[foodId].push(true);
-      }
+  const submitVote = async (foodId: string, vote: boolean) => {
+    if (!room || !currentPlayer) return;
 
-      setRoom({
-        ...room,
-        votes: newVotes,
-        currentFoodIndex: room.currentFoodIndex + 1,
-      });
-    }
+    await createVote({
+      room_id: parseInt(room.id),
+      player_id: parseInt(currentPlayer.id),
+      food_option_id: parseInt(foodId),
+      liked: vote,
+    });
+
+    const newVotes = { ...room.votes };
+    if (!newVotes[foodId]) newVotes[foodId] = [];
+    if (vote) newVotes[foodId].push(true);
+
+    setRoom({
+      ...room,
+      votes: newVotes,
+      currentFoodIndex: room.currentFoodIndex + 1,
+    });
   };
 
   const resetVoting = () => {
@@ -280,17 +326,41 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const getFoodOptions = () => FOOD_OPTIONS;
+  const getFoodOptions = () => foodOptions;
 
-  const getResults = () => {
+  const getResults = async (): Promise<
+    { food: FoodOption; votes: number }[]
+  > => {
     if (!room) return [];
+    const data = await getResultsRequest(room.code);
 
-    const results = FOOD_OPTIONS.map((food) => ({
-      food,
-      votes: room.votes[food.id]?.length || 0,
-    }));
+    if (data.match && data.winner) {
+      return [
+        {
+          food: {
+            id: data.winner.id.toString(),
+            name: data.winner.name,
+            image: data.winner.image_url,
+            category: data.winner.category,
+          },
+          votes: data.likes,
+        },
+      ];
+    }
 
-    return results.sort((a, b) => b.votes - a.votes);
+    if (data.top_3 && data.top_3.length > 0) {
+      return data.top_3.map((f: any) => ({
+        food: {
+          id: f.id.toString(),
+          name: f.name,
+          image: f.image_url,
+          category: f.category,
+        },
+        votes: f.likes_count,
+      }));
+    }
+
+    return [];
   };
 
   return (
