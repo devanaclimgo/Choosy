@@ -4,7 +4,7 @@ class Room < ApplicationRecord
 
   validates :code, presence: true, uniqueness: true
 
-  before_create :generate_code
+  before_create :generate_code, on: :create
 
   enum :status, {
     waiting: "waiting",
