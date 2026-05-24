@@ -144,7 +144,7 @@ const FOOD_OPTIONS: FoodOption[] = [
   },
 ];
 
-const AVATARS = ["🍕", "🍔", "🍣", "🌮", "🥗", "🍜", "🥩", "🍝"];
+const AVATARS = ["🍕", "🍔", "🍣", "🌮", "🥗", "🍜", "🥩", "🍝", "🥘", "🧁", "🥞", "🍳", "🌯", "🫔", "🧋", "🍟", "🍗", "🍩", "🧀", "🫕", "🍙"];
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
