@@ -1,50 +1,50 @@
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useNavigate, Link } from "react-router-dom"
-import { Home, RotateCcw, X, Check } from "lucide-react"
-import Img from "react-cool-img"
-import { Button } from "./ui/button"
-import { Progress } from "./ui/progress"
-import { useGame } from "../lib/game-context"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, Link } from "react-router-dom";
+import { Home, RotateCcw, X, Check } from "lucide-react";
+import Img from "react-cool-img";
+import { Button } from "./ui/button";
+import { Progress } from "./ui/progress";
+import { useGame } from "../lib/game-context";
 
 function VotingContent() {
-  const navigate = useNavigate()
-  const { room, getFoodOptions, submitVote, resetVoting } = useGame()
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [direction, setDirection] = useState<"left" | "right" | null>(null)
+  const navigate = useNavigate();
+  const { room, getFoodOptions, submitVote, resetVoting } = useGame();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [direction, setDirection] = useState<"left" | "right" | null>(null);
 
-  const foodOptions = getFoodOptions()
-  const currentFood = foodOptions[currentIndex]
-  const progress = ((currentIndex) / foodOptions.length) * 100
+  const foodOptions = getFoodOptions();
+  const currentFood = foodOptions[currentIndex];
+  const progress = (currentIndex / foodOptions.length) * 100;
 
   useEffect(() => {
     if (currentIndex >= foodOptions.length) {
-      navigate("/resultado")
+      navigate("/resultado");
     }
-  }, [currentIndex, foodOptions.length, navigate])
+  }, [currentIndex, foodOptions.length, navigate]);
 
   const handleVote = (vote: boolean) => {
-    if (isAnimating || currentIndex >= foodOptions.length) return
-    
-    setIsAnimating(true)
-    setDirection(vote ? "right" : "left")
-    submitVote(currentFood.id, vote)
-    
+    if (isAnimating || currentIndex >= foodOptions.length) return;
+
+    setIsAnimating(true);
+    setDirection(vote ? "right" : "left");
+    submitVote(currentFood.id, vote);
+
     setTimeout(() => {
-      setCurrentIndex((prev) => prev + 1)
-      setIsAnimating(false)
-      setDirection(null)
-    }, 300)
-  }
+      setCurrentIndex((prev) => prev + 1);
+      setIsAnimating(false);
+      setDirection(null);
+    }, 300);
+  };
 
   const handleReset = () => {
-    resetVoting()
-    setCurrentIndex(0)
-  }
+    resetVoting();
+    setCurrentIndex(0);
+  };
 
   if (currentIndex >= foodOptions.length) {
-    return null
+    return null;
   }
 
   return (
@@ -98,15 +98,17 @@ function VotingContent() {
             <motion.div
               key={currentFood.id}
               initial={{ opacity: 0, scale: 0.9, x: 0 }}
-              animate={{ 
-                opacity: 1, 
-                scale: 1, 
-                x: direction === "left" ? -100 : direction === "right" ? 100 : 0,
+              animate={{
+                opacity: 1,
+                scale: 1,
+                x:
+                  direction === "left" ? -100 : direction === "right" ? 100 : 0,
               }}
-              exit={{ 
-                opacity: 0, 
+              exit={{
+                opacity: 0,
                 scale: 0.9,
-                x: direction === "left" ? -200 : direction === "right" ? 200 : 0,
+                x:
+                  direction === "left" ? -200 : direction === "right" ? 200 : 0,
               }}
               transition={{ duration: 0.3 }}
               className="bg-card rounded-[2rem] shadow-xl border border-border/50 overflow-hidden"
@@ -121,7 +123,7 @@ function VotingContent() {
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                
+
                 {/* Food info */}
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs text-white mb-2">
@@ -150,7 +152,10 @@ function VotingContent() {
               size="lg"
               onClick={() => handleVote(false)}
               disabled={isAnimating}
-              className="h-20 text-xl font-bold rounded-3xl bg-destructive text-destructive-foreground shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+              className="h-20 text-xl font-bold rounded-3xl border-0 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+              style={{
+                background: "linear-gradient(135deg, #E24B4A 0%, #A32D2D 100%)",
+              }}
             >
               <X className="w-8 h-8 mr-2" strokeWidth={3} />
               NÃO
@@ -159,7 +164,10 @@ function VotingContent() {
               size="lg"
               onClick={() => handleVote(true)}
               disabled={isAnimating}
-              className="h-20 text-xl font-bold rounded-3xl bg-success text-success-foreground shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+              className="h-20 text-xl font-bold rounded-3xl border-0 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+              style={{
+                background: "linear-gradient(135deg, #639922 0%, #3B6D11 100%)",
+              }}
             >
               <Check className="w-8 h-8 mr-2" strokeWidth={3} />
               SIM
@@ -168,11 +176,9 @@ function VotingContent() {
         </div>
       </motion.div>
     </main>
-  )
+  );
 }
 
 export default function VotingPage() {
-  return (
-      <VotingContent />
-  )
+  return <VotingContent />;
 }
