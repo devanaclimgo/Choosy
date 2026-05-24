@@ -1,40 +1,32 @@
-import { useEffect, useState, useCallback } from "react"
-import { motion } from "framer-motion"
-import { useNavigate, Link } from "react-router-dom"
-import { Home, RotateCcw, Trophy, Medal } from "lucide-react"
-import Img from "react-cool-img"
-import confetti from "canvas-confetti"
-import { Button } from "./ui/button"
-import { useGame, type FoodOption } from "../lib/game-context"
-
-// Simulate votes for demo
-function simulateVotes(foods: { food: FoodOption; votes: number }[]) {
-  return foods.map((item, index) => ({
-    ...item,
-    votes: Math.max(0, 5 - index + Math.floor(Math.random() * 3)),
-  })).sort((a, b) => b.votes - a.votes)
-}
+import { useEffect, useState, useCallback } from "react";
+import { motion } from "framer-motion";
+import { useNavigate, Link } from "react-router-dom";
+import { Home, RotateCcw, Trophy, Medal } from "lucide-react";
+import Img from "react-cool-img";
+import confetti from "canvas-confetti";
+import { Button } from "./ui/button";
+import { useGame, type FoodOption } from "../lib/game-context";
 
 function ResultsContent() {
-  const navigate = useNavigate()
-  const { getResults, resetVoting } = useGame()
-  const [results, setResults] = useState<{ food: FoodOption; votes: number }[]>([])
-  const [hasConfettiFired, setHasConfettiFired] = useState(false)
+  const navigate = useNavigate();
+  const { getResults, resetVoting } = useGame();
+  const [results, setResults] = useState<{ food: FoodOption; votes: number }[]>(
+    [],
+  );
+  const [hasConfettiFired, setHasConfettiFired] = useState(false);
 
   useEffect(() => {
-    const rawResults = getResults()
-    const simulatedResults = simulateVotes(rawResults)
-    setResults(simulatedResults)
-  }, [getResults])
+    getResults().then(setResults);
+  }, []);
 
   const fireConfetti = useCallback(() => {
-    if (hasConfettiFired) return
-    setHasConfettiFired(true)
+    if (hasConfettiFired) return;
+    setHasConfettiFired(true);
 
-    const duration = 3000
-    const end = Date.now() + duration
+    const duration = 3000;
+    const end = Date.now() + duration;
 
-    const colors = ["#9333ea", "#ec4899", "#f97316", "#eab308"]
+    const colors = ["#9333ea", "#ec4899", "#f97316", "#eab308"];
 
     const frame = () => {
       confetti({
@@ -43,38 +35,38 @@ function ResultsContent() {
         spread: 55,
         origin: { x: 0, y: 0.8 },
         colors,
-      })
+      });
       confetti({
         particleCount: 4,
         angle: 120,
         spread: 55,
         origin: { x: 1, y: 0.8 },
         colors,
-      })
+      });
 
       if (Date.now() < end) {
-        requestAnimationFrame(frame)
+        requestAnimationFrame(frame);
       }
-    }
+    };
 
-    frame()
-  }, [hasConfettiFired])
+    frame();
+  }, [hasConfettiFired]);
 
   useEffect(() => {
     if (results.length > 0 && results[0].votes > 0) {
-      const timer = setTimeout(fireConfetti, 500)
-      return () => clearTimeout(timer)
+      const timer = setTimeout(fireConfetti, 500);
+      return () => clearTimeout(timer);
     }
-  }, [results, fireConfetti])
+  }, [results, fireConfetti]);
 
   const handlePlayAgain = () => {
-    resetVoting()
-    navigate("/votar")
-  }
+    resetVoting();
+    navigate("/votar");
+  };
 
-  const winner = results[0]
-  const hasWinner = winner && winner.votes > 0
-  const topThree = results.slice(0, 3)
+  const winner = results[0];
+  const hasWinner = winner && winner.votes > 0;
+  const topThree = results.slice(0, 3);
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
@@ -126,9 +118,7 @@ function ResultsContent() {
                 <h1 className="text-2xl font-bold text-foreground mb-1">
                   Temos um match!
                 </h1>
-                <p className="text-muted-foreground">
-                  O grupo decidiu!
-                </p>
+                <p className="text-muted-foreground">O grupo decidiu!</p>
               </motion.div>
 
               {/* Winner Card */}
@@ -147,14 +137,14 @@ function ResultsContent() {
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  
+
                   {/* Trophy badge */}
                   <div className="absolute top-4 right-4">
                     <div className="gradient-warm w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg">
                       <Trophy className="w-7 h-7 text-white" />
                     </div>
                   </div>
-                  
+
                   {/* Winner info */}
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <span className="inline-block px-3 py-1 bg-primary/80 backdrop-blur-sm rounded-full text-xs text-primary-foreground mb-2">
@@ -237,8 +227,8 @@ function ResultsContent() {
                       index === 0
                         ? "gradient-warm text-white"
                         : index === 1
-                        ? "bg-zinc-200 text-zinc-600"
-                        : "bg-amber-100 text-amber-800"
+                          ? "bg-zinc-200 text-zinc-600"
+                          : "bg-amber-100 text-amber-800"
                     }`}
                   >
                     {index + 1}º
@@ -277,11 +267,9 @@ function ResultsContent() {
         </div>
       </motion.div>
     </main>
-  )
+  );
 }
 
 export default function ResultsPage() {
-  return (
-      <ResultsContent />
-  )
+  return <ResultsContent />;
 }
