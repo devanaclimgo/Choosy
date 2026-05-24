@@ -34,7 +34,7 @@ function WaitingRoomContent() {
     return null;
   }
 
-  const allPlayers = [currentPlayer];
+  const allPlayers = room.players;
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
