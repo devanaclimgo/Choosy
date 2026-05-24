@@ -17,7 +17,7 @@ function JoinRoomContent() {
     if (code.trim() && name.trim()) {
       const success = await joinRoom(code.trim().toUpperCase(), name.trim())
       if (success) {
-        navigate("/votar")
+        navigate("/sala-de-espera")
       }
     }
   }
