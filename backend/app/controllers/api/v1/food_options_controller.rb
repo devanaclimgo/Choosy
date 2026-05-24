@@ -1,4 +1,4 @@
-class Api::V1::FoodOptionsController < ApplicationController
+class Api::V1::FoodOptionsController < Api::V1::BaseController
   def index
     foods = FoodOption.all
 
