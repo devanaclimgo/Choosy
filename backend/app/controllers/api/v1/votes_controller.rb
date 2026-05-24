@@ -1,4 +1,4 @@
-class Api::V1::VotesController < ApplicationController
+class Api::V1::VotesController < Api::V1::BaseController
   def create
     vote = Vote.create!(vote_params)
 
