@@ -1,33 +1,36 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useNavigate, Link } from "react-router-dom"
-import { ArrowLeft } from "lucide-react"
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
-import { useGame } from "../lib/game-context"
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate, Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { useGame } from "../lib/game-context";
 
 function JoinRoomContent() {
-  const [code, setCode] = useState("")
-  const [name, setName] = useState("")
-  const navigate = useNavigate()
-  const { joinRoom } = useGame()
+  const [code, setCode] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { joinRoom } = useGame();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (code.trim() && name.trim()) {
-      const success = await joinRoom(code.trim().toUpperCase(), name.trim())
+      const success = await joinRoom(code.trim().toUpperCase(), name.trim());
       if (success) {
-        navigate("/sala-de-espera")
+        navigate("/sala-de-espera");
+      } else {
+        setError("Sala não encontrada. Verifique o código e tente novamente.");
       }
     }
-  }
+  };
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "")
+    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
     if (value.length <= 6) {
-      setCode(value)
+      setCode(value);
     }
-  }
+  };
 
   return (
     <main className="min-h-screen gradient-hero">
@@ -112,15 +115,28 @@ function JoinRoomContent() {
             >
               Entrar
             </Button>
+
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  className="flex items-start gap-3 bg-destructive/10 border border-destructive/30 text-destructive rounded-2xl px-4 py-3 text-sm"
+                >
+                  <span className="text-lg leading-none">😕</span>
+                  <span>{error}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.form>
         </div>
       </section>
     </main>
-  )
+  );
 }
 
 export default function JoinRoomPage() {
-  return (
-      <JoinRoomContent />
-  )
+  return <JoinRoomContent />;
 }
