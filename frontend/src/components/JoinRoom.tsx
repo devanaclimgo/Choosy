@@ -24,7 +24,7 @@ function JoinRoomContent() {
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "")
-    if (value.length <= 4) {
+    if (value.length <= 6) {
       setCode(value)
     }
   }
@@ -81,11 +81,11 @@ function JoinRoomContent() {
                 </label>
                 <Input
                   type="text"
-                  placeholder="ABCD"
+                  placeholder="ABCDEF"
                   value={code}
                   onChange={handleCodeChange}
                   className="h-14 text-2xl text-center tracking-[0.3em] font-bold rounded-2xl border-2 border-border focus:border-primary bg-background uppercase"
-                  maxLength={4}
+                  maxLength={6}
                   autoFocus
                 />
               </div>
@@ -107,7 +107,7 @@ function JoinRoomContent() {
             <Button
               type="submit"
               size="lg"
-              disabled={!code.trim() || code.length < 4 || !name.trim()}
+              disabled={!code.trim() || code.length < 6 || !name.trim()}
               className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Entrar
