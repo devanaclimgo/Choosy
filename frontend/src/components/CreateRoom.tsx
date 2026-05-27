@@ -1,24 +1,25 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useNavigate } from "react-router-dom"
-import { ArrowLeft } from "lucide-react"
-import { Link } from "react-router-dom"
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
-import { useGame } from "../lib/game-context"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { useGame } from "../lib/game-context";
 
 function CreateRoomContent() {
-  const [name, setName] = useState("")
-  const navigate = useNavigate()
-  const { createRoom } = useGame()
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
+  const { createRoom } = useGame();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (name.trim()) {
-      createRoom(name.trim())
-      navigate("/sala-de-espera")
+      await createRoom(name.trim());
+      navigate("/sala-de-espera");
     }
-  }
+  };
 
   return (
     <main className="min-h-screen gradient-hero">
@@ -92,11 +93,9 @@ function CreateRoomContent() {
         </div>
       </section>
     </main>
-  )
+  );
 }
 
 export default function CreateRoomPage() {
-  return (
-      <CreateRoomContent />
-  )
+  return <CreateRoomContent />;
 }
