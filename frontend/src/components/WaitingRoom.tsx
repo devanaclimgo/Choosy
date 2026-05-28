@@ -9,6 +9,7 @@ function WaitingRoomContent() {
   const navigate = useNavigate();
   const { room, currentPlayer, startVoting } = useGame();
   const [copied, setCopied] = useState(false);
+  const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
 
   const handleCopyCode = async () => {
     if (room?.code) {
@@ -19,6 +20,11 @@ function WaitingRoomContent() {
   };
 
   const handleStartVoting = () => {
+    if (allPlayers.length < 2) {
+      setShowMinPlayersWarning(true);
+      setTimeout(() => setShowMinPlayersWarning(false), 3000);
+      return;
+    }
     startVoting();
     navigate("/votar");
   };
@@ -198,6 +204,30 @@ function WaitingRoomContent() {
           </Button>
         </div>
       </motion.div>
+
+      <AnimatePresence>
+        {showMinPlayersWarning && (
+          <motion.div
+            initial={{ opacity: 0, y: 80 }}
+            animate={{ opacity: 0.97, y: 0 }}
+            exit={{ opacity: 0, y: 80 }}
+            transition={{ type: "spring", stiffness: 300, damping: 28 }}
+            className="fixed bottom-28 left-0 right-0 flex justify-center px-4 z-50"
+          >
+            <div className="flex items-center gap-3 bg-card border border-border shadow-xl rounded-2xl px-5 py-4 max-w-sm w-full">
+              <span className="text-2xl">👥</span>
+              <div>
+                <p className="font-semibold text-foreground text-sm">
+                  Poucos jogadores
+                </p>
+                <p className="text-muted-foreground text-xs mt-0.5">
+                  Precisa de pelo menos 2 pessoas para começar.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
