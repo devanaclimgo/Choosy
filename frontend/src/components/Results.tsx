@@ -247,7 +247,7 @@ function ResultsContent() {
         transition={{ delay: 0.9 }}
         className="sticky bottom-0 px-4 py-4 bg-gradient-to-t from-background via-background to-transparent safe-bottom"
       >
-        <div className="max-w-md mx-auto flex gap-3">
+        <div className="max-w-md mx-auto flex gap-3 mb-16">
           <Link to="/" className="flex-1">
             <Button
               variant="outline"
