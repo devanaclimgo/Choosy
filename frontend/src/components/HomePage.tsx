@@ -108,7 +108,7 @@ function LandingContent() {
             Feito para grupos famintos
           </p>
           <span className="text-xs text-muted-foreground">
-            Desenvolvido por <a href="https://www.linkedin.com/in/ana-gomes-dev" className="text-primary hover:underline" no-opener no-referrer target="_blank">
+            Desenvolvido por <a href="https://www.linkedin.com/in/ana-gomes-dev" className="text-primary hover:underline" no-opener="true" no-referrer="true" target="_blank">
               Ana Gomes
             </a>
           </span>
