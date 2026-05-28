@@ -40,6 +40,12 @@ function WaitingRoomContent() {
     return null;
   }
 
+  useEffect(() => {
+    if (room?.isVotingStarted) {
+      navigate("/votar");
+    }
+  }, [room?.isVotingStarted, navigate]);
+
   const allPlayers = room.players;
 
   return (
