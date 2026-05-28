@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -50,7 +51,6 @@ export interface GameContextType {
   setRoom: (room: Room | null) => void;
   createRoom: (playerName: string) => void;
   joinRoom: (code: string, playerName: string) => Promise<boolean>;
-  refreshRoom: () => Promise<void>;
   startVoting: () => void;
   submitVote: (foodId: string, vote: boolean) => void;
   resetVoting: () => void;
@@ -177,27 +177,35 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
   const [foodOptions, setFoodOptions] = useState<FoodOption[]>([]);
+  const roomRef = useRef<Room | null>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      refreshRoom();
-    }, 2000);
-
-    return () => clearInterval(interval);
+    roomRef.current = room;
   }, [room]);
 
   useEffect(() => {
-    const savedRoom = localStorage.getItem("choosy-room");
+    const interval = setInterval(() => {
+      if (!roomRef.current) return;
+      getRoomRequest(roomRef.current.code).then((updatedRoom) => {
+        setRoom((current) => {
+          if (!current) return current;
+          return {
+            ...current,
+            players: updatedRoom.players.map((p: any) => ({
+              id: p.id.toString(),
+              name: p.name,
+              avatar:
+                current.players.find((pl) => pl.id === p.id.toString())
+                  ?.avatar ||
+                AVATARS[Math.floor(Math.random() * AVATARS.length)],
+            })),
+            isVotingStarted: updatedRoom.status === "voting",
+          };
+        });
+      });
+    }, 2000);
 
-    const savedPlayer = localStorage.getItem("choosy-player");
-
-    if (savedRoom) {
-      setRoom(JSON.parse(savedRoom));
-    }
-
-    if (savedPlayer) {
-      setCurrentPlayer(JSON.parse(savedPlayer));
-    }
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -235,26 +243,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     setCurrentPlayer(player);
     setRoom(room);
-  };
-
-  const refreshRoom = async () => {
-    setRoom((prev) => {
-      if (!prev) return prev;
-      getRoomRequest(prev.code).then((updatedRoom) => {
-        setRoom((current) => ({
-          ...current!,
-          players: updatedRoom.players.map((p: any) => ({
-            id: p.id.toString(),
-            name: p.name,
-            avatar:
-              current?.players.find((pl) => pl.id === p.id.toString())
-                ?.avatar || AVATARS[Math.floor(Math.random() * AVATARS.length)],
-          })),
-          isVotingStarted: updatedRoom.status === "voting",
-        }));
-      });
-      return prev;
-    });
   };
 
   const joinRoom = async (
@@ -379,7 +367,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
         room,
         setRoom,
         createRoom,
-        refreshRoom,
         joinRoom,
         startVoting,
         submitVote,
