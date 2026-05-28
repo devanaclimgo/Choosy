@@ -19,10 +19,14 @@ function VotingContent() {
   const progress = (currentIndex / foodOptions.length) * 100;
 
   useEffect(() => {
-    if (currentIndex >= foodOptions.length) {
+    if (foodOptions.length > 0 && currentIndex >= foodOptions.length) {
       navigate("/resultado");
     }
   }, [currentIndex, foodOptions.length, navigate]);
+
+  if (!currentFood) {
+    return null;
+  }
 
   const handleVote = (vote: boolean) => {
     if (isAnimating || currentIndex >= foodOptions.length) return;
