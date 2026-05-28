@@ -188,7 +188,7 @@ function WaitingRoomContent() {
         transition={{ delay: 0.5 }}
         className="sticky bottom-0 px-4 py-4 bg-gradient-to-t from-background via-background to-transparent safe-bottom"
       >
-        <div className="max-w-md mx-auto">
+        <div className="max-w-md mx-auto mb-16">
           <Button
             size="lg"
             onClick={handleStartVoting}
