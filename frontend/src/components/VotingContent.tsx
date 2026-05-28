@@ -147,7 +147,7 @@ function VotingContent() {
         className="sticky bottom-0 px-4 py-6 bg-gradient-to-t from-background via-background to-transparent safe-bottom"
       >
         <div className="max-w-md mx-auto">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 mb-16">
             <Button
               size="lg"
               onClick={() => handleVote(false)}
