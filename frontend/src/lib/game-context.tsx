@@ -184,7 +184,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [room]);
 
   useEffect(() => {
     const savedRoom = localStorage.getItem("choosy-room");
@@ -238,15 +238,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshRoom = async () => {
-    if (!room) return;
-
-    const updatedRoom = await getRoomRequest(room.code);
-
-    setRoom((prev) => ({
-      ...prev!,
-      players: updatedRoom.players,
-      isVotingStarted: updatedRoom.status === "voting",
-    }));
+    setRoom((prev) => {
+      if (!prev) return prev;
+      getRoomRequest(prev.code).then((updatedRoom) => {
+        setRoom((current) => ({
+          ...current!,
+          players: updatedRoom.players.map((p: any) => ({
+            id: p.id.toString(),
+            name: p.name,
+            avatar:
+              current?.players.find((pl) => pl.id === p.id.toString())
+                ?.avatar || AVATARS[Math.floor(Math.random() * AVATARS.length)],
+          })),
+          isVotingStarted: updatedRoom.status === "voting",
+        }));
+      });
+      return prev;
+    });
   };
 
   const joinRoom = async (
