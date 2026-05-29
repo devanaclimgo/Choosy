@@ -138,7 +138,7 @@ function ResultsContent() {
 
                   {/* Trophy badge */}
                   <div className="absolute top-4 right-4">
-                    <div className="gradient-warm w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg">
+                    <div className="gradient-warm w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg bg-yellow-500/80">
                       <Trophy className="w-7 h-7 text-white" />
                     </div>
                   </div>
@@ -220,7 +220,7 @@ function ResultsContent() {
                     </span>
                   </div>
                   <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg ${
+                    className={`w-10 h-10 bg-primary/40 rounded-xl flex items-center justify-center font-bold text-lg ${
                       index === 0
                         ? "gradient-warm text-white"
                         : index === 1
