@@ -132,9 +132,7 @@ function ResultsContent() {
                   <Img
                     src={winner.food.image}
                     alt={winner.food.name}
-                    fill
                     className="object-cover"
-                    priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
@@ -199,7 +197,6 @@ function ResultsContent() {
                     <Img
                       src={item.food.image}
                       alt={item.food.name}
-                      fill
                       className="object-cover"
                     />
                   </div>

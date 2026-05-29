@@ -138,9 +138,7 @@ function VotingContent() {
                 <Img
                   src={currentFood.image}
                   alt={currentFood.name}
-                  fill
                   className="object-cover"
-                  priority
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
