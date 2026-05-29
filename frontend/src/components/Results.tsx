@@ -128,11 +128,11 @@ function ResultsContent() {
                 transition={{ delay: 0.4 }}
                 className="bg-card rounded-[2rem] shadow-xl border-2 border-primary/30 overflow-hidden mb-6"
               >
-                <div className="relative aspect-[4/3]">
+                <div className="relative aspect-[4/3] w-full">
                   <Img
                     src={winner.food.image}
                     alt={winner.food.name}
-                    className="object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
@@ -197,7 +197,7 @@ function ResultsContent() {
                     <Img
                       src={item.food.image}
                       alt={item.food.name}
-                      className="object-cover"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   </div>
                   <div className="flex-1 min-w-0">
