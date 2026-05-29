@@ -10,31 +10,17 @@ import { useGame } from "../lib/game-context";
 function VotingContent() {
   const navigate = useNavigate();
   const { room, getFoodOptions, submitVote, resetVoting } = useGame();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
 
   const foodOptions = getFoodOptions();
 
-  if (foodOptions.length === 0) {
-    return (
-      <main className="min-h-screen gradient-hero flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          {[0, 1, 2].map((i) => (
-            <motion.div
-              key={i}
-              className="w-2 h-2 rounded-full bg-primary"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
-            />
-          ))}
-        </div>
-      </main>
-    );
-  }
-
   const currentFood = foodOptions[currentIndex];
-  const progress = (currentIndex / foodOptions.length) * 100;
+
+  const progress =
+    foodOptions.length > 0 ? (currentIndex / foodOptions.length) * 100 : 0;
 
   useEffect(() => {
     if (foodOptions.length > 0 && currentIndex >= foodOptions.length) {
@@ -42,16 +28,15 @@ function VotingContent() {
     }
   }, [currentIndex, foodOptions.length, navigate]);
 
-  if (!currentFood) {
-    return null;
-  }
-
-  const handleVote = (vote: boolean) => {
-    if (isAnimating || currentIndex >= foodOptions.length) return;
+  const handleVote = async (vote: boolean) => {
+    if (isAnimating || !currentFood || currentIndex >= foodOptions.length) {
+      return;
+    }
 
     setIsAnimating(true);
     setDirection(vote ? "right" : "left");
-    submitVote(currentFood.id, vote);
+
+    await submitVote(currentFood.id, vote);
 
     setTimeout(() => {
       setCurrentIndex((prev) => prev + 1);
@@ -65,7 +50,28 @@ function VotingContent() {
     setCurrentIndex(0);
   };
 
-  if (currentIndex >= foodOptions.length) {
+  if (foodOptions.length === 0) {
+    return (
+      <main className="min-h-screen gradient-hero flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          {[0, 1, 2].map((i) => (
+            <motion.div
+              key={i}
+              className="w-2 h-2 rounded-full bg-primary"
+              animate={{ y: [0, -8, 0] }}
+              transition={{
+                duration: 0.6,
+                repeat: Infinity,
+                delay: i * 0.15,
+              }}
+            />
+          ))}
+        </div>
+      </main>
+    );
+  }
+
+  if (!currentFood) {
     return null;
   }
 
@@ -84,11 +90,13 @@ function VotingContent() {
           >
             <Home className="w-5 h-5" />
           </Link>
+
           <div className="bg-card rounded-full px-4 py-1.5 shadow-sm border border-border/50">
             <span className="text-sm font-bold tracking-wider text-foreground">
               {room?.code || "DEMO"}
             </span>
           </div>
+
           <button
             onClick={handleReset}
             className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -105,10 +113,12 @@ function VotingContent() {
             <span className="text-sm text-muted-foreground">
               {currentIndex + 1} de {foodOptions.length}
             </span>
+
             <span className="text-sm font-medium text-foreground">
               {Math.round(progress)}%
             </span>
           </div>
+
           <Progress value={progress} className="h-2 rounded-full" />
         </div>
       </div>
@@ -139,16 +149,16 @@ function VotingContent() {
                 <Img
                   src={currentFood.image}
                   alt={currentFood.name}
-                  className="object-cover"
+                  className="object-cover w-full h-full"
                 />
-                {/* Overlay gradient */}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                {/* Food info */}
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs text-white mb-2">
                     {currentFood.category}
                   </span>
+
                   <h2 className="text-3xl font-bold text-white text-balance">
                     {currentFood.name}
                   </h2>
@@ -159,7 +169,7 @@ function VotingContent() {
         </div>
       </section>
 
-      {/* Vote Buttons */}
+      {/* Buttons */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -180,6 +190,7 @@ function VotingContent() {
               <X className="w-8 h-8 mr-2" strokeWidth={3} />
               NÃO
             </Button>
+
             <Button
               size="lg"
               onClick={() => handleVote(true)}
