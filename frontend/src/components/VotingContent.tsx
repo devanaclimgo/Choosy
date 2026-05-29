@@ -15,6 +15,24 @@ function VotingContent() {
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
 
   const foodOptions = getFoodOptions();
+
+  if (foodOptions.length === 0) {
+    return (
+      <main className="min-h-screen gradient-hero flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          {[0, 1, 2].map((i) => (
+            <motion.div
+              key={i}
+              className="w-2 h-2 rounded-full bg-primary"
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
+            />
+          ))}
+        </div>
+      </main>
+    );
+  }
+
   const currentFood = foodOptions[currentIndex];
   const progress = (currentIndex / foodOptions.length) * 100;
 
@@ -49,23 +67,6 @@ function VotingContent() {
 
   if (currentIndex >= foodOptions.length) {
     return null;
-  }
-
-  if (foodOptions.length === 0) {
-    return (
-      <main className="min-h-screen gradient-hero flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          {[0, 1, 2].map((i) => (
-            <motion.div
-              key={i}
-              className="w-2 h-2 rounded-full bg-primary"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
-            />
-          ))}
-        </div>
-      </main>
-    );
   }
 
   return (
