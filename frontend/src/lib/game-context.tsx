@@ -30,7 +30,7 @@ export interface FoodOption {
 }
 
 export interface Vote {
-  odId: string;
+  foodId: string;
   playerId: string;
   vote: boolean;
 }
