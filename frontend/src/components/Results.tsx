@@ -73,8 +73,8 @@ function ResultsContent() {
     navigate("/votar");
   };
 
-  const winner = results[0];
-  const hasWinner = hasMatch;
+  const winner = results[0] ?? null;
+  const hasWinner = hasMatch && winner;
   const topThree = results.slice(0, 3);
 
   return (
