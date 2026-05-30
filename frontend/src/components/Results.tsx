@@ -10,13 +10,21 @@ import { useGame, type FoodOption } from "../lib/game-context";
 function ResultsContent() {
   const navigate = useNavigate();
   const { getResults, resetVoting } = useGame();
-  const [results, setResults] = useState<{ food: FoodOption; votes: number }[]>(
-    [],
-  );
+  const [results, setResults] = useState<
+    {
+      food: FoodOption;
+      votes: number;
+    }[]
+  >([]);
+
+  const [hasMatch, setHasMatch] = useState(false);
   const [hasConfettiFired, setHasConfettiFired] = useState(false);
 
   useEffect(() => {
-    getResults().then(setResults);
+    getResults().then((data) => {
+      setResults(data.results);
+      setHasMatch(data.match);
+    });
   }, []);
 
   const fireConfetti = useCallback(() => {
@@ -53,8 +61,9 @@ function ResultsContent() {
   }, [hasConfettiFired]);
 
   useEffect(() => {
-    if (results.length > 0 && results[0].votes > 0) {
+    if (results.length > 0) {
       const timer = setTimeout(fireConfetti, 500);
+
       return () => clearTimeout(timer);
     }
   }, [results, fireConfetti]);
@@ -65,7 +74,7 @@ function ResultsContent() {
   };
 
   const winner = results[0];
-  const hasWinner = winner && winner.votes > 0;
+  const hasWinner = hasMatch;
   const topThree = results.slice(0, 3);
 
   return (
