@@ -170,12 +170,14 @@ function ResultsContent() {
               animate={{ opacity: 1 }}
               className="text-center mb-6"
             >
-              <span className="text-6xl mb-4 block">🤔</span>
+              <span className="text-6xl mb-4 block">😅 </span>
               <h1 className="text-2xl font-bold text-foreground mb-1">
-                Empate!
+                Difícil decidir, hein?
               </h1>
               <p className="text-muted-foreground">
-                Veja os mais votados abaixo
+                Nenhuma opção alcançou aprovação suficiente.
+                <br></br>
+                Confira as mais votadas:
               </p>
             </motion.div>
           )}
@@ -218,7 +220,7 @@ function ResultsContent() {
                         <Medal className="w-4 h-4 text-zinc-400" />
                       )}
                       {index === 2 && (
-                        <Medal className="w-4 h-4 text-amber-700" />
+                        <Medal className="w-4 h-4 text-zinc-400" />
                       )}
                       <span className="font-semibold text-foreground truncate">
                         {item.food.name}
@@ -229,9 +231,9 @@ function ResultsContent() {
                     </span>
                   </div>
                   <div
-                    className={`w-10 h-10 bg-primary/40 rounded-xl flex items-center justify-center font-bold text-lg ${
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg ${
                       index === 0
-                        ? "gradient-warm text-white"
+                        ? "gradient-warm bg-primary/40 text-white"
                         : index === 1
                           ? "bg-zinc-200 text-zinc-600"
                           : "bg-amber-100 text-amber-800"
