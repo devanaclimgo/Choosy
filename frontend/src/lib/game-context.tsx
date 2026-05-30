@@ -44,6 +44,14 @@ export interface Room {
   isVotingStarted: boolean;
 }
 
+export interface ResultsResponse {
+  match: boolean;
+  results: {
+    food: FoodOption;
+    votes: number;
+  }[];
+}
+
 export interface GameContextType {
   currentPlayer: Player | null;
   setCurrentPlayer: (player: Player | null) => void;
@@ -55,7 +63,7 @@ export interface GameContextType {
   submitVote: (foodId: string, vote: boolean) => void;
   resetVoting: () => void;
   getFoodOptions: () => FoodOption[];
-  getResults: () => Promise<{ food: FoodOption; votes: number }[]>;
+  getResults: () => Promise<ResultsResponse>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -324,28 +332,34 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const getFoodOptions = () => foodOptions;
 
-  const getResults = async (): Promise<
-    { food: FoodOption; votes: number }[]
-  > => {
-    if (!room) return [];
+  const getResults: () => Promise<ResultsResponse> = async () => {
+    if (!room) {
+      return {
+        match: false,
+        results: [],
+      };
+    }
     const data = await getResultsRequest(room.code);
-
     if (data.match && data.winner) {
-      return [
-        {
-          food: {
-            id: data.winner.id.toString(),
-            name: data.winner.name,
-            image: data.winner.image_url,
-            category: data.winner.category,
+      return {
+        match: true,
+        results: [
+          {
+            food: {
+              id: data.winner.id.toString(),
+              name: data.winner.name,
+              image: data.winner.image_url,
+              category: data.winner.category,
+            },
+            votes: data.likes,
           },
-          votes: data.likes,
-        },
-      ];
+        ],
+      };
     }
 
-    if (data.top_3 && data.top_3.length > 0) {
-      return data.top_3.map((f: any) => ({
+    return {
+      match: false,
+      results: data.top_3.map((f: any) => ({
         food: {
           id: f.id.toString(),
           name: f.name,
@@ -353,10 +367,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
           category: f.category,
         },
         votes: f.likes_count,
-      }));
-    }
-
-    return [];
+      })),
+    };
   };
 
   return (
