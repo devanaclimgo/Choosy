@@ -48,6 +48,8 @@ function WaitingRoomContent() {
 
   const allPlayers = room.players;
 
+  const isHost = room.ownerId === currentPlayer?.id;
+
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
       {/* Header */}
@@ -201,13 +203,15 @@ function WaitingRoomContent() {
         className="sticky bottom-0 px-4 py-4 bg-gradient-to-t from-background via-background to-transparent safe-bottom"
       >
         <div className="max-w-md mx-auto mb-16">
-          <Button
-            size="lg"
-            onClick={handleStartVoting}
-            className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all"
-          >
-            Começar votação
-          </Button>
+          {!isHost && (
+            <Button
+              size="lg"
+              onClick={handleStartVoting}
+              className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all"
+            >
+              Começar votação
+            </Button>
+          )}
         </div>
       </motion.div>
 
