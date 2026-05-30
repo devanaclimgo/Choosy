@@ -37,6 +37,7 @@ export interface Vote {
 
 export interface Room {
   id: string;
+  ownerId: string;
   code: string;
   players: Player[];
   currentFoodIndex: number;
@@ -199,6 +200,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           if (!current) return current;
           return {
             ...current,
+            ownerId: updatedRoom.owner_id.toString(),
             players: updatedRoom.players.map((p: any) => ({
               id: p.id.toString(),
               name: p.name,
@@ -242,6 +244,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     const room: Room = {
       id: roomResponse.id.toString(),
+      ownerId: player.id,
       code: roomResponse.code,
       players: [player],
       currentFoodIndex: 0,
@@ -272,6 +275,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
       setRoom({
         id: roomResponse.id.toString(),
+        ownerId: roomResponse.owner_id.toString(),
         code: roomResponse.code,
         players: [...roomResponse.players, player],
         currentFoodIndex: 0,
