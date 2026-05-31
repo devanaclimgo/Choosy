@@ -24,7 +24,7 @@ function VotingContent() {
 
   useEffect(() => {
     if (foodOptions.length > 0 && currentIndex >= foodOptions.length) {
-      navigate("/resultado");
+      navigate("/aguardando");
     }
   }, [currentIndex, foodOptions.length, navigate]);
 
