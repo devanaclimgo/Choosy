@@ -1,5 +1,5 @@
 class Room < ApplicationRecord
-  belongs_to :owner, class_name: "Player"
+  belongs_to :owner, class_name: "Player", optional: true
   has_many :players, dependent: :destroy
   has_many :votes, dependent: :destroy
 
