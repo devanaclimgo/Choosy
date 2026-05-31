@@ -33,7 +33,7 @@ class Api::V1::RoomsController < Api::V1::BaseController
       id: @room.id,
       code: @room.code,
       status: @room.status,
-      owner: @room.owner,
+      owner_id: @room.owner_id,
       players: @room.players.select(:id, :name)
     }
   end
