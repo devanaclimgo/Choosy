@@ -48,7 +48,7 @@ function WaitingRoomContent() {
 
   const allPlayers = room.players;
 
-  const isHost = room.ownerId === currentPlayer?.id;
+  const isHost = room?.ownerId === currentPlayer?.id;
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
