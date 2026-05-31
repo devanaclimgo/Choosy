@@ -1,7 +1,9 @@
 import { api } from "./api";
 
-export async function createRoomRequest() {
-  const response = await api.post("/rooms");
+export async function createRoomRequest(name: string) {
+  const response = await api.post("/rooms", {
+    name,
+  });
 
   return response.data;
 }
@@ -22,6 +24,12 @@ export async function joinRoomRequest(code: string, name: string) {
 
 export async function startVotingRequest(code: string) {
   const response = await api.post(`/rooms/${code}/start`);
+
+  return response.data;
+}
+
+export async function getVotingStatus(code: string) {
+  const response = await api.get(`/rooms/${code}/status`);
 
   return response.data;
 }
