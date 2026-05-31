@@ -48,7 +48,9 @@ function WaitingRoomContent() {
 
   const allPlayers = room.players;
 
-  const isHost = room?.ownerId === currentPlayer?.id;
+  const isOwner = currentPlayer?.id === room?.ownerId;
+
+  const canStart = isOwner && room.players.length >= 2;
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
@@ -203,7 +205,7 @@ function WaitingRoomContent() {
         className="sticky bottom-0 px-4 py-4 bg-gradient-to-t from-background via-background to-transparent safe-bottom"
       >
         <div className="max-w-md mx-auto mb-16">
-          {!isHost && (
+          {canStart ? (
             <Button
               size="lg"
               onClick={handleStartVoting}
@@ -211,6 +213,8 @@ function WaitingRoomContent() {
             >
               Começar votação
             </Button>
+          ) : (
+            <p>Aguardando jogadores...</p>
           )}
         </div>
       </motion.div>
