@@ -294,7 +294,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const startVoting = async () => {
     if (!room) return;
 
-    await startVotingRequest(room.code);
+    await startVotingRequest(room.code, currentPlayer?.id || "");
 
     setRoom({
       ...room,
