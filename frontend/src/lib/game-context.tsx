@@ -234,16 +234,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const createRoom = async (playerName: string) => {
     const roomResponse = await createRoomRequest(playerName);
 
+    const owner = roomResponse.players[0];
+
     const player: Player = {
-      id: roomResponse.player.id.toString(),
-      name: roomResponse.player.name,
+      id: owner.id.toString(),
+      name: owner.name,
       avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)],
     };
 
     const room: Room = {
-      id: roomResponse.room.id.toString(),
-      ownerId: player.id,
-      code: roomResponse.room.code,
+      id: roomResponse.id.toString(),
+      ownerId: owner.id.toString(),
+      code: roomResponse.code,
       players: [player],
       currentFoodIndex: 0,
       votes: {},
