@@ -4,6 +4,7 @@ import CreateRoomPage from "./components/CreateRoom";
 import JoinRoom from "./components/JoinRoom";
 import VotingPage from "./components/VotingContent";
 import WaitingRoomPage from "./components/WaitingRoom";
+import WaitingPage from "./components/WaitingPage";
 import ResultsPage from "./components/Results";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Route path="/entrar" element={<JoinRoom />} />
       <Route path="/votar" element={<VotingPage />} />
       <Route path="/sala-de-espera" element={<WaitingRoomPage />} />
+      <Route path="/aguardando" element={<WaitingPage />} />
       <Route path="/resultado" element={<ResultsPage />} />
     </Routes>
   );
