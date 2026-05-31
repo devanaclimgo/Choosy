@@ -7,18 +7,25 @@ class Api::V1::RoomsController < Api::V1::BaseController
   ]
 
   def create
-    room = Room.create!(
-      code: generate_code,
-      status: "waiting"
-    )
+    Room.transaction do
+      room = Room.create!(
+        status: "waiting"
+      )
 
-    player = room.players.create!(
-      name: params[:name]
-    )
+      player = room.players.create!(
+        name: params[:name]
+      )
 
-    room.update!(owner: player)
+      room.update!(owner: player)
 
-    render json: room, status: :created
+      render json: {
+        id: room.id,
+        code: room.code,
+        status: room.status,
+        owner_id: player.id,
+        players: [player]
+      }, status: :created
+    end
   end
 
   def show
@@ -46,7 +53,7 @@ class Api::V1::RoomsController < Api::V1::BaseController
   def start
     room = Room.find(params[:id])
 
-    unless room.owner_id == params[:player_id]
+    unless @room.owner_id == params[:player_id].to_i
       return render json: {
         error: "Only the owner can start the voting"
       }, status: :forbidden
