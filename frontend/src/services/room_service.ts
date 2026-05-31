@@ -22,8 +22,10 @@ export async function joinRoomRequest(code: string, name: string) {
   return response.data;
 }
 
-export async function startVotingRequest(code: string) {
-  const response = await api.post(`/rooms/${code}/start`);
+export async function startVotingRequest(code: string, player_id: string) {
+  const response = await api.post(`/rooms/${code}/start`, {
+    player_id,
+  });
 
   return response.data;
 }
