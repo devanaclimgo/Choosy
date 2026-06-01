@@ -3,6 +3,7 @@ class Api::V1::RoomsController < Api::V1::BaseController
     :show,
     :join,
     :start,
+    :status,
     :results
   ]
 
@@ -67,6 +68,15 @@ class Api::V1::RoomsController < Api::V1::BaseController
 
     render json: {
       message: "Voting started"
+    }
+  end
+
+  def status
+    render json: {
+      players_count: @room.players.count,
+      finished_players: @room.players.where(finished_voting: true).count,
+      all_finished: @room.players.count ==
+                    @room.players.where(finished_voting: true).count
     }
   end
 
