@@ -4,8 +4,15 @@
 /backend/storage/*
 /backend/.env*
 
-/frontend/node_modules
 /frontend/dist
 /frontend/.env*
 
 .DS_Store
+
+# Playwright
+/frontend/node_modules/
+/frontend/test-results/
+/frontend/playwright-report/
+/frontend/blob-report/
+/frontend/playwright/.cache/
+/frontend/playwright/.auth/
