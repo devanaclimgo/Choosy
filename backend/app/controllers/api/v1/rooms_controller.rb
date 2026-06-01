@@ -51,15 +51,13 @@ class Api::V1::RoomsController < Api::V1::BaseController
   end
 
   def start
-    room = Room.find(params[:id])
-
     unless @room.owner_id == params[:player_id].to_i
       return render json: {
         error: "Only the owner can start the voting"
       }, status: :forbidden
     end
 
-    if room.players.count < 2
+    if @room.players.count < 2
       return render json: {
         error: "At least 2 players are required to start the voting"
       }, status: :unprocessable_entity
