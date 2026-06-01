@@ -72,11 +72,16 @@ class Api::V1::RoomsController < Api::V1::BaseController
   end
 
   def status
+    finished_players =
+      @room.players.where(finished_voting: true).count
+
+    players_count =
+      @room.players.count
+
     render json: {
-      players_count: @room.players.count,
-      finished_players: @room.players.where(finished_voting: true).count,
-      all_finished: @room.players.count ==
-                    @room.players.where(finished_voting: true).count
+      players_count: players_count,
+      finished_players: finished_players,
+      all_finished: players_count == finished_players
     }
   end
 
