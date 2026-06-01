@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
-import { Home, RotateCcw, X, Check } from "lucide-react";
+import { Home, X, Check } from "lucide-react";
 import Img from "react-cool-img";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
@@ -9,7 +9,7 @@ import { useGame } from "../lib/game-context";
 
 function VotingContent() {
   const navigate = useNavigate();
-  const { room, getFoodOptions, submitVote, resetVoting } = useGame();
+  const { room, getFoodOptions, submitVote } = useGame();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -43,11 +43,6 @@ function VotingContent() {
       setIsAnimating(false);
       setDirection(null);
     }, 300);
-  };
-
-  const handleReset = () => {
-    resetVoting();
-    setCurrentIndex(0);
   };
 
   if (foodOptions.length === 0) {
@@ -97,12 +92,6 @@ function VotingContent() {
             </span>
           </div>
 
-          <button
-            onClick={handleReset}
-            className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <RotateCcw className="w-5 h-5" />
-          </button>
         </div>
       </motion.header>
 
