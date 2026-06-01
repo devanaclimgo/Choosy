@@ -10,6 +10,7 @@ Rails.application.routes.draw do
         member do
           post :join
           post :start
+          get :status
           get :results
         end
       end
