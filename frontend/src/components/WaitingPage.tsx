@@ -9,26 +9,24 @@ export default function WaitingPage() {
   const { room } = useGame();
 
   const [status, setStatus] = useState({
-    players_count: 0,
+    players_count: room?.players.length ?? 0,
     finished_players: 0,
   });
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const data = await getVotingStatus(room!.code);
+    const fetchStatus = async () => {
+      const data = await getVotingStatus(room!.code);
 
-        console.log("STATUS", data);
+      setStatus(data);
 
-        setStatus(data);
-
-        if (data.all_finished) {
-          navigate("/resultado");
-        }
-      } catch (error) {
-        console.error(error);
+      if (data.all_finished) {
+        navigate("/resultado");
       }
-    }, 2000);
+    };
+
+    fetchStatus();
+
+    const interval = setInterval(fetchStatus, 1000);
 
     return () => clearInterval(interval);
   }, []);
