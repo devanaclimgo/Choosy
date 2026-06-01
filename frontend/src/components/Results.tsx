@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
-import { Home, RotateCcw, Trophy, Medal } from "lucide-react";
+import { Home, Trophy, Medal } from "lucide-react";
 import Img from "react-cool-img";
 import confetti from "canvas-confetti";
 import { Button } from "./ui/button";
@@ -95,12 +95,6 @@ function ResultsContent() {
           <span className="text-sm font-medium text-muted-foreground">
             Resultado
           </span>
-          <button
-            onClick={handlePlayAgain}
-            className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <RotateCcw className="w-5 h-5" />
-          </button>
         </div>
       </motion.header>
 
