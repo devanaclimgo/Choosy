@@ -214,7 +214,25 @@ function WaitingRoomContent() {
               Começar votação
             </Button>
           ) : (
-            <p>Aguardando jogadores...</p>
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex gap-1.5">
+                {[0, 1, 2].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="w-2 h-2 rounded-full bg-primary/40"
+                    animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                    }}
+                  />
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Aguardando o anfitrião iniciar...
+              </p>
+            </div>
           )}
         </div>
       </motion.div>
