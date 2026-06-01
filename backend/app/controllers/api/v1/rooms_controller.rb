@@ -64,6 +64,8 @@ class Api::V1::RoomsController < Api::V1::BaseController
       }, status: :unprocessable_entity
     end
 
+    @room.players.update_all(finished_voting: false)
+
     @room.update!(status: "voting")
 
     render json: {
