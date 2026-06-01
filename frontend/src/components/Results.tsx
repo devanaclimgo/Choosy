@@ -19,6 +19,7 @@ function ResultsContent() {
 
   const [hasMatch, setHasMatch] = useState(false);
   const [hasConfettiFired, setHasConfettiFired] = useState(false);
+  const { room, currentPlayer } = useGame();
 
   useEffect(() => {
     getResults().then((data) => {
@@ -76,6 +77,8 @@ function ResultsContent() {
   const winner = results[0] ?? null;
   const hasWinner = hasMatch && winner;
   const topThree = results.slice(0, 3);
+
+  const isOwner = room?.ownerId === currentPlayer?.id;
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
@@ -259,13 +262,15 @@ function ResultsContent() {
               Início
             </Button>
           </Link>
-          <Button
-            size="lg"
-            onClick={handlePlayAgain}
-            className="flex-1 h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg"
-          >
-            Jogar novamente
-          </Button>
+          {isOwner && (
+            <Button
+              size="lg"
+              onClick={handlePlayAgain}
+              className="flex-1 h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg"
+            >
+              Jogar novamente
+            </Button>
+          )}
         </div>
       </motion.div>
     </main>
