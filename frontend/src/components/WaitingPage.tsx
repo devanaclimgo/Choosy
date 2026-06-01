@@ -15,19 +15,28 @@ export default function WaitingPage() {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const data = await getVotingStatus(room!.code);
-      setStatus(data);
-      if (data.all_finished) {
-        navigate("/resultado");
+      try {
+        const data = await getVotingStatus(room!.code);
+
+        console.log("STATUS", data);
+
+        setStatus(data);
+
+        if (data.all_finished) {
+          navigate("/resultado");
+        }
+      } catch (error) {
+        console.error(error);
       }
     }, 2000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const progress = status.players_count > 0
-    ? (status.finished_players / status.players_count) * 100
-    : 0;
+  const progress =
+    status.players_count > 0
+      ? (status.finished_players / status.players_count) * 100
+      : 0;
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col items-center justify-center px-4">
