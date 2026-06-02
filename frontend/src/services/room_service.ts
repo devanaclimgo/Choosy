@@ -41,3 +41,14 @@ export async function getResultsRequest(code: string) {
 
   return response.data;
 }
+
+export const restartRoomRequest = async (
+  roomCode: string,
+  playerId: string,
+) => {
+  const response = await api.post(`/rooms/${roomCode}/restart`, {
+    player_id: playerId,
+  });
+
+  return response.data;
+};
