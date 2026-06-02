@@ -28,7 +28,8 @@ class ResultCalculatorService
         match: true,
         winner: winner,
         likes: winner.likes_count,
-        percentage: percentage.round
+        percentage: percentage.round,
+        top_3: grouped_votes.first(3)
       }
     else
       {
