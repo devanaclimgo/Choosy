@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Home, Trophy, Medal } from "lucide-react";
 import Img from "react-cool-img";
 import confetti from "canvas-confetti";
@@ -8,7 +8,6 @@ import { Button } from "./ui/button";
 import { useGame, type FoodOption } from "../lib/game-context";
 
 function ResultsContent() {
-  const navigate = useNavigate();
   const { getResults } = useGame();
   const [results, setResults] = useState<
     {
@@ -19,8 +18,6 @@ function ResultsContent() {
 
   const [hasMatch, setHasMatch] = useState(false);
   const [hasConfettiFired, setHasConfettiFired] = useState(false);
-  const { room, currentPlayer } = useGame();
-  const { restartRoomRequest } = useGame();
 
   useEffect(() => {
     getResults().then((data) => {
@@ -70,21 +67,9 @@ function ResultsContent() {
     }
   }, [results, fireConfetti]);
 
-  useEffect(() => {
-    if (room?.isVotingStarted) {
-      navigate("/votar");
-    }
-  }, [room?.isVotingStarted]);
-
-  const handlePlayAgain = async () => {
-    await restartRoomRequest();
-  };
-
   const winner = results[0];
   const hasWinner = hasMatch && winner;
   const topThree = results.slice(0, 3);
-
-  const isOwner = room?.ownerId === currentPlayer?.id;
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
@@ -101,9 +86,6 @@ function ResultsContent() {
           >
             <Home className="w-5 h-5" />
           </Link>
-          <span className="text-sm font-medium text-muted-foreground">
-            Resultado
-          </span>
         </div>
       </motion.header>
 
@@ -263,20 +245,11 @@ function ResultsContent() {
             <Button
               variant="outline"
               size="lg"
-              className="w-full h-14 text-lg font-semibold rounded-2xl border-2 border-primary/30 bg-card/80"
+              className="w-full h-14 text-lg font-semibold rounded-2xl border-2 border-primary/30 bg-card"
             >
               Início
             </Button>
           </Link>
-          {isOwner && (
-            <Button
-              size="lg"
-              onClick={handlePlayAgain}
-              className="flex-1 h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg"
-            >
-              Nova rodada
-            </Button>
-          )}
         </div>
       </motion.div>
     </main>
