@@ -9,7 +9,7 @@ import { useGame, type FoodOption } from "../lib/game-context";
 
 function ResultsContent() {
   const navigate = useNavigate();
-  const { getResults, resetVoting } = useGame();
+  const { getResults } = useGame();
   const [results, setResults] = useState<
     {
       food: FoodOption;
@@ -20,6 +20,7 @@ function ResultsContent() {
   const [hasMatch, setHasMatch] = useState(false);
   const [hasConfettiFired, setHasConfettiFired] = useState(false);
   const { room, currentPlayer } = useGame();
+  const { restartRoomRequest } = useGame();
 
   useEffect(() => {
     getResults().then((data) => {
@@ -69,12 +70,17 @@ function ResultsContent() {
     }
   }, [results, fireConfetti]);
 
-  const handlePlayAgain = () => {
-    resetVoting();
-    navigate("/votar");
+  useEffect(() => {
+    if (room?.isVotingStarted) {
+      navigate("/votar");
+    }
+  }, [room?.isVotingStarted]);
+
+  const handlePlayAgain = async () => {
+    await restartRoomRequest();
   };
 
-  const winner = results[0] ?? null;
+  const winner = results[0];
   const hasWinner = hasMatch && winner;
   const topThree = results.slice(0, 3);
 
@@ -268,7 +274,7 @@ function ResultsContent() {
               onClick={handlePlayAgain}
               className="flex-1 h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg"
             >
-              Jogar novamente
+              Nova rodada
             </Button>
           )}
         </div>
