@@ -4,6 +4,7 @@
 /backend/storage/*
 /backend/.env*
 /backend/config/*.key
+/backend/config/master.key
 
 /frontend/dist
 /frontend/.env*
