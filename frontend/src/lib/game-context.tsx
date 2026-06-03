@@ -12,7 +12,6 @@ import {
   getRoomRequest,
   joinRoomRequest,
   getResultsRequest,
-  restartRoomRequest as restartRoomApi,
 } from "../services/room_service";
 
 import { createVote } from "../services/vote_service";
@@ -66,7 +65,6 @@ export interface GameContextType {
   resetVoting: () => void;
   getFoodOptions: () => FoodOption[];
   getResults: () => Promise<ResultsResponse>;
-  restartRoomRequest: () => Promise<void>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -362,19 +360,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     };
   };
 
-  const restartRoom = async () => {
-    if (!room || !currentPlayer) return;
-
-    await restartRoomApi(room.code, currentPlayer.id);
-
-    setRoom({
-      ...room,
-      currentFoodIndex: 0,
-      votes: {},
-      isVotingStarted: true,
-    });
-  };
-
   return (
     <GameContext.Provider
       value={{
@@ -388,8 +373,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         submitVote,
         resetVoting,
         getFoodOptions,
-        getResults,
-        restartRoomRequest: restartRoom,
+        getResults
       }}
     >
       {children}
