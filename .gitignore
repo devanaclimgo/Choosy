@@ -3,6 +3,7 @@
 /backend/node_modules
 /backend/storage/*
 /backend/.env*
+/backend/master.key
 
 /frontend/dist
 /frontend/.env*
