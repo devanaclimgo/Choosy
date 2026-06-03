@@ -12,6 +12,7 @@ import {
   getRoomRequest,
   joinRoomRequest,
   getResultsRequest,
+  restartRoomRequest as restartRoomApi,
 } from "../services/room_service";
 
 import { createVote } from "../services/vote_service";
@@ -65,6 +66,7 @@ export interface GameContextType {
   resetVoting: () => void;
   getFoodOptions: () => FoodOption[];
   getResults: () => Promise<ResultsResponse>;
+  restartRoomRequest: () => Promise<void>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -343,26 +345,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
         results: [],
       };
     }
+
     const data = await getResultsRequest(room.code);
-    if (data.match && data.winner) {
-      return {
-        match: true,
-        results: [
-          {
-            food: {
-              id: data.winner.id.toString(),
-              name: data.winner.name,
-              image: data.winner.image_url,
-              category: data.winner.category,
-            },
-            votes: data.likes,
-          },
-        ],
-      };
-    }
 
     return {
-      match: false,
+      match: data.match,
       results: data.top_3.map((f: any) => ({
         food: {
           id: f.id.toString(),
@@ -373,6 +360,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
         votes: f.likes_count,
       })),
     };
+  };
+
+  const restartRoom = async () => {
+    if (!room || !currentPlayer) return;
+
+    await restartRoomApi(room.code, currentPlayer.id);
+
+    setRoom({
+      ...room,
+      currentFoodIndex: 0,
+      votes: {},
+      isVotingStarted: true,
+    });
   };
 
   return (
@@ -389,6 +389,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         resetVoting,
         getFoodOptions,
         getResults,
+        restartRoomRequest: restartRoom,
       }}
     >
       {children}
