@@ -12,7 +12,6 @@ Rails.application.routes.draw do
           post :start
           get :status
           get :results
-          post "/rooms/:id/restart", to: "rooms#restart"
         end
       end
       resources :votes, only: [:create]
