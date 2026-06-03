@@ -4,8 +4,7 @@ class Api::V1::RoomsController < Api::V1::BaseController
     :join,
     :start,
     :status,
-    :results,
-    :restart
+    :results
   ]
 
   def create
@@ -81,6 +80,10 @@ class Api::V1::RoomsController < Api::V1::BaseController
     players_count =
       @room.players.count
 
+    if players_count == finished_players
+      @room.update!(status: "finished")
+    end
+
     render json: {
       players_count: players_count,
       finished_players: finished_players,
@@ -95,26 +98,6 @@ class Api::V1::RoomsController < Api::V1::BaseController
         .call
 
     render json: results
-  end
-
-  def restart
-    unless @room.owner_id == params[:player_id].to_i
-      return render json: {
-        error: "Only owner can restart"
-      }, status: :forbidden
-    end
-
-    @room.votes.destroy_all
-
-    @room.players.update_all(
-      finished_voting: false
-    )
-
-    @room.update!(status: "voting")
-
-    render json: {
-      message: "Room restarted"
-    }
   end
 
   private
