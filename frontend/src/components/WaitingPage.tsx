@@ -14,8 +14,10 @@ export default function WaitingPage() {
   });
 
   useEffect(() => {
+    if (!room) return;
+
     const fetchStatus = async () => {
-      const data = await getVotingStatus(room!.code);
+      const data = await getVotingStatus(room.code);
 
       setStatus(data);
 
@@ -29,7 +31,7 @@ export default function WaitingPage() {
     const interval = setInterval(fetchStatus, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [room, navigate]);
 
   const progress =
     status.players_count > 0
