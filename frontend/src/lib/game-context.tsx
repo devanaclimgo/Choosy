@@ -196,6 +196,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const interval = setInterval(() => {
       if (!roomRef.current) return;
       getRoomRequest(roomRef.current.code).then((updatedRoom) => {
+        console.log("POLL", updatedRoom.status);
         setRoom((current) => {
           if (!current) return current;
           return {
