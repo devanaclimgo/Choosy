@@ -53,6 +53,10 @@ function WaitingRoomContent() {
 
   const canStart = isOwner && room.players.length >= 2;
 
+  useEffect(() => {
+    console.log("ROOM CHANGED", room);
+  }, [room]);
+
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
       {/* Header */}
