@@ -203,31 +203,31 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
           updatedRoom.status === "voting",
         );
-        setRoom((current) => {
-          if (!current) return current;
+        try {
+          setRoom((current) => {
+            if (!current) return current;
 
-          const nextRoom = {
-            ...roomRef.current!,
-            ownerId: updatedRoom.owner_id.toString(),
-            players: updatedRoom.players.map((p: any) => ({
-              id: p.id.toString(),
-              name: p.name,
-              avatar:
-                roomRef.current?.players.find((pl) => pl.id === p.id.toString())
-                  ?.avatar ||
-                AVATARS[Math.floor(Math.random() * AVATARS.length)],
-            })),
-            isVotingStarted: updatedRoom.status === "voting",
-          };
+            const next = {
+              ...current,
+              ownerId: updatedRoom.owner_id.toString(),
+              players: updatedRoom.players.map((p: any) => ({
+                id: p.id.toString(),
+                name: p.name,
+                avatar:
+                  current.players.find((pl) => pl.id === p.id.toString())
+                    ?.avatar ||
+                  AVATARS[Math.floor(Math.random() * AVATARS.length)],
+              })),
+              isVotingStarted: updatedRoom.status === "voting",
+            };
 
-          console.log("DIRECT SET", nextRoom);
+            console.log("SETTING ROOM", next);
 
-          setRoom(nextRoom);
-
-          console.log("SETTING ROOM", nextRoom.isVotingStarted);
-
-          return nextRoom;
-        });
+            return next;
+          });
+        } catch (err) {
+          console.error("SETROOM ERROR", err);
+        }
       });
     }, 2000);
 
