@@ -10,7 +10,7 @@ import { useGame } from "../lib/game-context";
 function VotingContent() {
   const navigate = useNavigate();
   const { room, getFoodOptions, submitVote } = useGame();
-
+  console.log("VOTING PAGE ROOM", room);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
@@ -91,7 +91,6 @@ function VotingContent() {
               {room?.code || "DEMO"}
             </span>
           </div>
-
         </div>
       </motion.header>
 
