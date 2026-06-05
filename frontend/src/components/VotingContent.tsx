@@ -16,6 +16,14 @@ function VotingContent() {
 
   const foodOptions = getFoodOptions();
 
+  useEffect(() => {
+    if (foodOptions.length > 0) return;
+    const timeout = setTimeout(() => {
+      navigate("/criar-sala"); // or show error
+    }, 8000);
+    return () => clearTimeout(timeout);
+  }, [foodOptions.length]);
+
   const currentFood = foodOptions[currentIndex];
 
   const progress =
