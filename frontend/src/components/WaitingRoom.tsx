@@ -11,6 +11,18 @@ function WaitingRoomContent() {
   const [copied, setCopied] = useState(false);
   const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
 
+  useEffect(() => {
+    if (!room) {
+      navigate("/criar-sala");
+    }
+  }, [room, navigate]);
+
+  useEffect(() => {
+    if (room?.isVotingStarted) {
+      navigate("/votar");
+    }
+  }, [room?.isVotingStarted, navigate]);
+
   const handleCopyCode = async () => {
     if (room?.code) {
       await navigator.clipboard.writeText(room.code);
@@ -29,31 +41,15 @@ function WaitingRoomContent() {
     navigate("/votar");
   };
 
-  // Redirect if no room
-  useEffect(() => {
-    if (!room) {
-      navigate("/criar-sala");
-    }
-  }, [room, navigate]);
-
   if (!room || !currentPlayer) {
     return null;
   }
-
-  useEffect(() => {
-    if (room?.isVotingStarted) {
-      navigate("/votar");
-    }
-  }, [room?.isVotingStarted, navigate]);
 
   const allPlayers = room.players;
 
   const isOwner = currentPlayer?.id === room?.ownerId;
 
   const canStart = isOwner && room.players.length >= 2;
-
-  useEffect(() => {
-  }, [room]);
 
   return (
     <main className="min-h-screen gradient-hero flex flex-col">
