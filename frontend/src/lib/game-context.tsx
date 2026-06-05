@@ -196,13 +196,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const interval = setInterval(() => {
       if (!roomRef.current) return;
       getRoomRequest(roomRef.current.code).then((updatedRoom) => {
-        console.log(
-          "POLL",
-
-          updatedRoom.status,
-
-          updatedRoom.status === "voting",
-        );
         try {
           setRoom((current) => {
             if (!current) return current;
@@ -220,8 +213,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
               })),
               isVotingStarted: updatedRoom.status === "voting",
             };
-
-            console.log("SETTING ROOM", next);
 
             return next;
           });

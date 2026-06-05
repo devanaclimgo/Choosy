@@ -8,7 +8,6 @@ import WaitingPage from "./components/WaitingPage";
 import ResultsPage from "./components/Results";
 
 function App() {
-  console.log("APP RENDER");
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />

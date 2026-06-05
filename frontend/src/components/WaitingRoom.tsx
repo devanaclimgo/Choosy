@@ -8,7 +8,6 @@ import { useGame } from "../lib/game-context";
 function WaitingRoomContent() {
   const navigate = useNavigate();
   const { room, currentPlayer, startVoting } = useGame();
-  console.log("WAITING PAGE", room?.isVotingStarted);
   const [copied, setCopied] = useState(false);
   const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
 
@@ -54,7 +53,6 @@ function WaitingRoomContent() {
   const canStart = isOwner && room.players.length >= 2;
 
   useEffect(() => {
-    console.log("ROOM CHANGED", room);
   }, [room]);
 
   return (

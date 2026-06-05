@@ -38,8 +38,6 @@ export default function WaitingPage() {
       ? (status.finished_players / status.players_count) * 100
       : 0;
 
-  console.log("WAITING", room?.isVotingStarted);
-
   return (
     <main className="min-h-screen gradient-hero flex flex-col items-center justify-center px-4">
       <motion.div
