@@ -13,7 +13,7 @@ function WaitingRoomContent() {
 
   useEffect(() => {
     if (!room) {
-      navigate("/criar-sala");
+      navigate("/votar");
     }
   }, [room, navigate]);
 
