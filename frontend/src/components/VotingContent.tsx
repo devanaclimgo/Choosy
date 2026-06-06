@@ -15,12 +15,11 @@ function VotingContent() {
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
 
   const foodOptions = getFoodOptions();
-  console.log("[voting] renderizou");
 
   useEffect(() => {
     if (foodOptions.length > 0) return;
     const timeout = setTimeout(() => {
-      navigate("/criar-sala"); // or show error
+      console.log("No food options received after 8 seconds");
     }, 8000);
     return () => clearTimeout(timeout);
   }, [foodOptions.length]);
