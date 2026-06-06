@@ -1,62 +1,15 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Copy, Check, Home, Users } from "lucide-react";
 import { Button } from "./ui/button";
 import { useGame } from "../lib/game-context";
-import { getRoomRequest } from "../services/room_service";
-import LoadingSpinner from "./LoadingSpinner";
 
 function WaitingRoomContent() {
-  const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
-  const { room, setRoomPersisted, currentPlayer, startVoting } = useGame();
-
+  const { room, currentPlayer, startVoting } = useGame();
   const [copied, setCopied] = useState(false);
   const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
-
-  useEffect(() => {
-    console.log("[waitingroom] room:", room, "code da URL:", code);
-
-    if (room || !code) return;
-    console.log("[waitingroom] sem room no contexto, buscando pela URL...");
-
-    getRoomRequest(code)
-      .then((data) => {
-        console.log("[waitingroom] sala encontrada:", data);
-
-        setRoomPersisted({
-          id: data.id.toString(),
-          ownerId: data.owner_id.toString(),
-          code: data.code,
-          players: data.players.map((p: any) => ({
-            id: p.id.toString(),
-            name: p.name,
-            avatar: "🍕",
-          })),
-          currentFoodIndex: 0,
-          votes: {},
-          isVotingStarted: data.status === "voting",
-        });
-      })
-      .catch((err) => {
-        console.log("[waitingroom] erro ao buscar sala, indo pra home:", err);
-        navigate("/");
-      });
-  }, [code, room]);
-
-  useEffect(() => {
-    console.log("[waitingroom] isVotingStarted mudou:", room?.isVotingStarted);
-
-    if (room?.isVotingStarted) {
-      console.log("[waitingroom] navegando para /votar");
-      navigate("/votar");
-    }
-  }, [room?.isVotingStarted, navigate]);
-
-  if (!room || !currentPlayer) {
-    return <LoadingSpinner />;
-  }
 
   const handleCopyCode = async () => {
     if (room?.code) {
@@ -76,9 +29,22 @@ function WaitingRoomContent() {
     navigate("/votar");
   };
 
+  // Redirect if no room
+  useEffect(() => {
+    if (!room) {
+      navigate("/criar-sala");
+    }
+  }, [room, navigate]);
+
   if (!room || !currentPlayer) {
     return null;
   }
+
+  useEffect(() => {
+    if (room?.isVotingStarted) {
+      navigate("/votar");
+    }
+  }, [room?.isVotingStarted, navigate]);
 
   const allPlayers = room.players;
 

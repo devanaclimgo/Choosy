@@ -13,9 +13,9 @@ import {
   joinRoomRequest,
   getResultsRequest,
 } from "../services/room_service";
+
 import { createVote } from "../services/vote_service";
 import { getFoodOptionsRequest } from "../services/food_service";
-
 export interface Player {
   id: string;
   name: string;
@@ -55,10 +55,10 @@ export interface ResultsResponse {
 
 export interface GameContextType {
   currentPlayer: Player | null;
-  setCurrentPlayerPersisted: (player: Player | null) => void;
+  setCurrentPlayer: (player: Player | null) => void;
   room: Room | null;
-  setRoomPersisted: (room: Room | null) => void;
-  createRoom: (playerName: string) => Promise<string>;
+  setRoom: (room: Room | null) => void;
+  createRoom: (playerName: string) => void;
   joinRoom: (code: string, playerName: string) => Promise<boolean>;
   startVoting: () => void;
   submitVote: (foodId: string, vote: boolean) => void;
@@ -68,6 +68,95 @@ export interface GameContextType {
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
+
+// const FOOD_OPTIONS: FoodOption[] = [
+//   {
+//     id: "1",
+//     name: "Pizza",
+//     image:
+//       "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop",
+//     category: "italiana",
+//   },
+//   {
+//     id: "2",
+//     name: "Sushi",
+//     image:
+//       "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&h=400&fit=crop",
+//     category: "japonesa",
+//   },
+//   {
+//     id: "3",
+//     name: "Hambúrguer",
+//     image:
+//       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=400&fit=crop",
+//     category: "americana",
+//   },
+//   {
+//     id: "4",
+//     name: "Massas",
+//     image:
+//       "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=400&fit=crop",
+//     category: "italiana",
+//   },
+//   {
+//     id: "5",
+//     name: "Salada",
+//     image:
+//       "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=400&fit=crop",
+//     category: "saudável",
+//   },
+//   {
+//     id: "6",
+//     name: "Frutos do Mar",
+//     image:
+//       "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&h=400&fit=crop",
+//     category: "frutos do mar",
+//   },
+//   {
+//     id: "7",
+//     name: "Churrasco",
+//     image:
+//       "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&h=400&fit=crop",
+//     category: "brasileira",
+//   },
+//   {
+//     id: "8",
+//     name: "Comida Mexicana",
+//     image:
+//       "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=400&fit=crop",
+//     category: "mexicana",
+//   },
+//   {
+//     id: "9",
+//     name: "Poke",
+//     image:
+//       "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=400&fit=crop",
+//     category: "havaiana",
+//   },
+//   {
+//     id: "10",
+//     name: "Açaí",
+//     image:
+//       "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&h=400&fit=crop",
+//     category: "brasileira",
+//   },
+//   { id: "11", name: "Pastel", image: "../pastel.jpg", category: "brasileira" },
+//   {
+//     id: "12",
+//     name: "Sanduíche",
+//     image:
+//       "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=400&fit=crop",
+//     category: "lanche",
+//   },
+//   { id: "13", name: "Sorvete", image: "../sorvete.jpg", category: "italiana" },
+//   {
+//     id: "14",
+//     name: "Ramen",
+//     image:
+//       "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=400&fit=crop",
+//     category: "japonesa",
+//   },
+// ];
 
 const AVATARS = [
   "🍕",
@@ -93,129 +182,67 @@ const AVATARS = [
   "🍙",
 ];
 
-function randomAvatar() {
-  return AVATARS[Math.floor(Math.random() * AVATARS.length)];
-}
-
 export function GameProvider({ children }: { children: ReactNode }) {
-  const [currentPlayer, setCurrentPlayer] = useState<Player | null>(() => {
-    try {
-      const saved = sessionStorage.getItem("currentPlayer");
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const [room, setRoom] = useState<Room | null>(() => {
-    try {
-      const saved = sessionStorage.getItem("room");
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
-
+  const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
+  const [room, setRoom] = useState<Room | null>(null);
   const [foodOptions, setFoodOptions] = useState<FoodOption[]>([]);
-  const roomRef = useRef<Room | null>(room);
+  const roomRef = useRef<Room | null>(null);
 
-  // Mantém o ref sempre atualizado
   useEffect(() => {
     roomRef.current = room;
   }, [room]);
 
-  // Persiste currentPlayer no sessionStorage
-  const setCurrentPlayerPersisted = (player: Player | null) => {
-    setCurrentPlayer(player);
-    if (player) {
-      sessionStorage.setItem("currentPlayer", JSON.stringify(player));
-    } else {
-      sessionStorage.removeItem("currentPlayer");
-    }
-  };
-
-  // Persiste room no sessionStorage
-  const setRoomPersisted = (room: Room | null) => {
-    setRoom(room);
-    roomRef.current = room;
-    if (room) {
-      sessionStorage.setItem("room", JSON.stringify(room));
-    } else {
-      sessionStorage.removeItem("room");
-    }
-  };
-
-  // Polling: busca status da sala a cada 2s
   useEffect(() => {
     const interval = setInterval(() => {
-      const current = roomRef.current;
-      if (!current) {
-        console.log("[polling] roomRef é null, pulando");
-        return;
-      }
-
-      console.log("[polling] buscando sala:", current.code);
-
-      getRoomRequest(current.code)
-        .then((updatedRoom) => {
-          console.log("[polling] resposta:", updatedRoom.status);
-
-          const latest = roomRef.current;
-          if (!latest) return;
-
-          const next: Room = {
-            ...latest,
+      if (!roomRef.current) return;
+      getRoomRequest(roomRef.current.code).then((updatedRoom) => {
+        setRoom((current) => {
+          if (!current) return current;
+          return {
+            ...current,
             ownerId: updatedRoom.owner_id.toString(),
             players: updatedRoom.players.map((p: any) => ({
               id: p.id.toString(),
               name: p.name,
               avatar:
-                latest.players.find((pl) => pl.id === p.id.toString())
-                  ?.avatar || randomAvatar(),
+                current.players.find((pl) => pl.id === p.id.toString())
+                  ?.avatar ||
+                AVATARS[Math.floor(Math.random() * AVATARS.length)],
             })),
             isVotingStarted: updatedRoom.status === "voting",
           };
-          console.log(
-            "[polling] atualizando room",
-
-            updatedRoom.status === "voting",
-          );
-
-          setRoomPersisted(next);
-        })
-        .catch((err) => console.error("[polling] erro:", err));
+        });
+      });
     }, 2000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Busca opções de comida uma vez
   useEffect(() => {
-    getFoodOptionsRequest()
-      .then((data: any[]) => {
-        setFoodOptions(
-          data.map((f: any) => ({
-            id: f.id.toString(),
-            name: f.name,
-            image: f.image_url,
-            category: f.category,
-          })),
-        );
-      })
-      .catch((err) => console.error("[food] erro ao buscar opções:", err));
+    getFoodOptionsRequest().then((data: any[]) => {
+      setFoodOptions(
+        data.map((f: any) => ({
+          id: f.id.toString(),
+          name: f.name,
+          image: f.image_url,
+          category: f.category,
+        })),
+      );
+    });
   }, []);
 
-  const createRoom = async (playerName: string): Promise<string> => {
+  const createRoom = async (playerName: string) => {
     const roomResponse = await createRoomRequest(playerName);
+
     const owner = roomResponse.players[0];
 
     const player: Player = {
       id: owner.id.toString(),
       name: owner.name,
-      avatar: randomAvatar(),
+      avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)],
     };
 
-    const newRoom: Room = {
+    const room: Room = {
       id: roomResponse.id.toString(),
       ownerId: owner.id.toString(),
       code: roomResponse.code,
@@ -225,10 +252,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       isVotingStarted: false,
     };
 
-    setCurrentPlayerPersisted(player);
-    setRoomPersisted(newRoom);
-
-    return roomResponse.code;
+    setCurrentPlayer(player);
+    setRoom(room);
   };
 
   const joinRoom = async (
@@ -237,15 +262,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
   ): Promise<boolean> => {
     try {
       const roomResponse = await getRoomRequest(code);
+
       const playerResponse = await joinRoomRequest(code, playerName);
 
       const player: Player = {
         id: playerResponse.id.toString(),
         name: playerResponse.name,
-        avatar: randomAvatar(),
+        avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)],
       };
 
-      const newRoom: Room = {
+      setCurrentPlayer(player);
+
+      setRoom({
         id: roomResponse.id.toString(),
         ownerId: roomResponse.owner_id.toString(),
         code: roomResponse.code,
@@ -253,68 +281,70 @@ export function GameProvider({ children }: { children: ReactNode }) {
         currentFoodIndex: 0,
         votes: {},
         isVotingStarted: roomResponse.status === "voting",
-      };
-
-      setCurrentPlayerPersisted(player);
-      setRoomPersisted(newRoom);
+      });
 
       return true;
     } catch (error) {
-      console.error("[joinRoom] erro:", error);
+      console.error(error);
+
       return false;
     }
   };
 
   const startVoting = async () => {
-    const current = roomRef.current;
-    if (!current) return;
+    if (!room) return;
 
-    await startVotingRequest(current.code, currentPlayer?.id || "");
+    await startVotingRequest(room.code, currentPlayer?.id || "");
 
-    setRoomPersisted({ ...current, isVotingStarted: true });
+    setRoom({
+      ...room,
+      isVotingStarted: true,
+    });
   };
 
   const submitVote = async (foodId: string, vote: boolean) => {
-    const current = roomRef.current;
-    if (!current || !currentPlayer) return;
+    if (!room || !currentPlayer) return;
 
     await createVote({
-      room_id: parseInt(current.id),
+      room_id: parseInt(room.id),
       player_id: parseInt(currentPlayer.id),
       food_option_id: parseInt(foodId),
       liked: vote,
     });
 
-    const newVotes = { ...current.votes };
+    const newVotes = { ...room.votes };
     if (!newVotes[foodId]) newVotes[foodId] = [];
     if (vote) newVotes[foodId].push(true);
 
-    setRoomPersisted({
-      ...current,
+    setRoom({
+      ...room,
       votes: newVotes,
-      currentFoodIndex: current.currentFoodIndex + 1,
+      currentFoodIndex: room.currentFoodIndex + 1,
     });
   };
 
   const resetVoting = () => {
-    const current = roomRef.current;
-    if (!current) return;
-
-    setRoomPersisted({
-      ...current,
-      currentFoodIndex: 0,
-      votes: {},
-      isVotingStarted: true,
-    });
+    if (room) {
+      setRoom({
+        ...room,
+        currentFoodIndex: 0,
+        votes: {},
+        isVotingStarted: true,
+      });
+    }
   };
 
   const getFoodOptions = () => foodOptions;
 
-  const getResults = async (): Promise<ResultsResponse> => {
-    const current = roomRef.current;
-    if (!current) return { match: false, results: [] };
+  const getResults: () => Promise<ResultsResponse> = async () => {
+    if (!room) {
+      return {
+        match: false,
+        results: [],
+      };
+    }
 
-    const data = await getResultsRequest(current.code);
+    const data = await getResultsRequest(room.code);
 
     return {
       match: data.match,
@@ -334,16 +364,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
     <GameContext.Provider
       value={{
         currentPlayer,
-        setCurrentPlayerPersisted,
+        setCurrentPlayer,
         room,
-        setRoomPersisted,
+        setRoom,
         createRoom,
         joinRoom,
         startVoting,
         submitVote,
         resetVoting,
         getFoodOptions,
-        getResults,
+        getResults
       }}
     >
       {children}

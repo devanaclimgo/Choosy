@@ -67,7 +67,6 @@ class Api::V1::RoomsController < Api::V1::BaseController
     @room.players.update_all(finished_voting: false)
 
     @room.update!(status: "voting")
-    puts @room.reload.status
 
     render json: {
       message: "Voting started"
