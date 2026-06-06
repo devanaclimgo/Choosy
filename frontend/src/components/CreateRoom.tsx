@@ -16,8 +16,8 @@ function CreateRoomContent() {
     e.preventDefault();
 
     if (name.trim()) {
-      await createRoom(name.trim());
-      navigate("/sala-de-espera");
+      const code =await createRoom(name.trim());
+      navigate(`/sala-de-espera/${code}`);
     }
   };
 
