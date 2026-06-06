@@ -10,7 +10,8 @@ import LoadingSpinner from "./LoadingSpinner";
 function WaitingRoomContent() {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
-  const { room, setRoom, currentPlayer, startVoting } = useGame();
+  const { room, setRoomPersisted, currentPlayer, startVoting } = useGame();
+
   const [copied, setCopied] = useState(false);
   const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
 
@@ -24,7 +25,7 @@ function WaitingRoomContent() {
       .then((data) => {
         console.log("[waitingroom] sala encontrada:", data);
 
-        setRoom({
+        setRoomPersisted({
           id: data.id.toString(),
           ownerId: data.owner_id.toString(),
           code: data.code,
