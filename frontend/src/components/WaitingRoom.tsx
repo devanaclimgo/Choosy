@@ -1,28 +1,39 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { Copy, Check, Home, Users } from "lucide-react";
 import { Button } from "./ui/button";
 import { useGame } from "../lib/game-context";
+import { getRoomRequest } from "../services/room_service";
+import LoadingSpinner from "./LoadingSpinner";
 
 function WaitingRoomContent() {
+  const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
-  const { room, currentPlayer, startVoting } = useGame();
+  const { room, setRoom, currentPlayer, startVoting } = useGame();
   const [copied, setCopied] = useState(false);
   const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-
-useEffect(() => {
-    const timeout = setTimeout(() => setIsReady(true), 100);
-    return () => clearTimeout(timeout);
-  }, []);
 
   useEffect(() => {
-    if (!isReady) return;
-    if (!room) {
-      navigate("/");
-    }
-  }, [room, navigate, isReady]);
+    if (room || !code) return;
+    getRoomRequest(code)
+      .then((data) => {
+        setRoom({
+          id: data.id.toString(),
+          ownerId: data.owner_id.toString(),
+          code: data.code,
+          players: data.players.map((p: any) => ({
+            id: p.id.toString(),
+            name: p.name,
+            avatar: "🍕",
+          })),
+          currentFoodIndex: 0,
+          votes: {},
+          isVotingStarted: data.status === "voting",
+        });
+      })
+      .catch(() => navigate("/"));
+  }, [code, room]);
 
   useEffect(() => {
     if (room?.isVotingStarted) {
@@ -31,7 +42,7 @@ useEffect(() => {
   }, [room?.isVotingStarted, navigate]);
 
   if (!room || !currentPlayer) {
-    return null;
+    return <LoadingSpinner />;
   }
 
   const handleCopyCode = async () => {
