@@ -1,10 +1,60 @@
-foods = [
-  {
-    name: "Pizza",
-    image_url: "URL"
-  },
-  {
-    name: "Sushi",
-    image_url: "URL"
-  }
+food_options = [
+  {name: "Pizza",
+  category: "italiana",
+  image_url: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400"},
+ {name: "Sushi",
+  category: "japonesa",
+  image_url: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400"},
+ {name: "Hambúrguer",
+  category: "americana",
+  image_url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400"},
+ {name: "Massas",
+  category: "italiana",
+  image_url: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400"},
+ {name: "Salada",
+  category: "saudável",
+  image_url: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400"},
+ {name: "Frutos do Mar",
+  category: "frutos do mar",
+  image_url: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400"},
+ {name: "Churrasco",
+  category: "brasileira",
+  image_url: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400"},
+ {name: "Comida Mexicana",
+  category: "mexicana",
+  image_url: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400"},
+ {name: "Poke",
+  category: "havaiana",
+  image_url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400"},
+ {name: "Açaí",
+  category: "brasileira",
+  image_url: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400"},
+ {name: "Sanduíche",
+  category: "lanche",
+  image_url: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400"},
+ {name: "Sorvete",
+  category: "sobremesa",
+  image_url: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400"},
+ {name: "Ramen",
+  category: "japonesa",
+  image_url: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400"},
+ {name: "Tacos",
+  category: "mexicana",
+  image_url: "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=400"},
+ {name: "Lasanha",
+  category: "italiana",
+  image_url: "https://images.unsplash.com/photo-1619895092538-128341789043?w=400"},
+ {name: "Batata Frita",
+  category: "lanche",
+  image_url: "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=400"},
+ {name: "Panqueca",
+  category: "café da manhã",
+  image_url: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=400"}
 ]
+
+food_options.each do |food|
+  FoodOption.find_or_create_by!(name: food[:name]) do |f|
+    f.category = food[:category]
+    f.image_url = food[:image_url]
+  end
+end
