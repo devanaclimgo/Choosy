@@ -10,18 +10,29 @@ function WaitingRoomContent() {
   const { room, currentPlayer, startVoting } = useGame();
   const [copied, setCopied] = useState(false);
   const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
+useEffect(() => {
+    const timeout = setTimeout(() => setIsReady(true), 100);
+    return () => clearTimeout(timeout);
+  }, []);
 
   useEffect(() => {
+    if (!isReady) return;
     if (!room) {
-      navigate("/votar");
+      navigate("/criar-sala");
     }
-  }, [room, navigate]);
+  }, [room, navigate, isReady]);
 
   useEffect(() => {
     if (room?.isVotingStarted) {
       navigate("/votar");
     }
   }, [room?.isVotingStarted, navigate]);
+
+  if (!room || !currentPlayer) {
+    return null;
+  }
 
   const handleCopyCode = async () => {
     if (room?.code) {
