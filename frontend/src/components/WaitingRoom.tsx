@@ -20,7 +20,7 @@ useEffect(() => {
   useEffect(() => {
     if (!isReady) return;
     if (!room) {
-      navigate("/criar-sala");
+      navigate("/");
     }
   }, [room, navigate, isReady]);
 
