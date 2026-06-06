@@ -70,8 +70,27 @@ export interface GameContextType {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 const AVATARS = [
-  "🍕", "🍔", "🍣", "🌮", "🥗", "🍜", "🥩", "🍝", "🥘", "🧁",
-  "🥞", "🍳", "🌯", "🫔", "🧋", "🍟", "🍗", "🍩", "🧀", "🫕", "🍙",
+  "🍕",
+  "🍔",
+  "🍣",
+  "🌮",
+  "🥗",
+  "🍜",
+  "🥩",
+  "🍝",
+  "🥘",
+  "🧁",
+  "🥞",
+  "🍳",
+  "🌯",
+  "🫔",
+  "🧋",
+  "🍟",
+  "🍗",
+  "🍩",
+  "🧀",
+  "🫕",
+  "🍙",
 ];
 
 function randomAvatar() {
@@ -151,11 +170,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
               id: p.id.toString(),
               name: p.name,
               avatar:
-                latest.players.find((pl) => pl.id === p.id.toString())?.avatar ||
-                randomAvatar(),
+                latest.players.find((pl) => pl.id === p.id.toString())
+                  ?.avatar || randomAvatar(),
             })),
             isVotingStarted: updatedRoom.status === "voting",
           };
+          console.log(
+            "[polling] atualizando room",
+
+            updatedRoom.status === "voting",
+          );
 
           setRoomPersisted(next);
         })
@@ -175,7 +199,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
             name: f.name,
             image: f.image_url,
             category: f.category,
-          }))
+          })),
         );
       })
       .catch((err) => console.error("[food] erro ao buscar opções:", err));
@@ -207,7 +231,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return roomResponse.code;
   };
 
-  const joinRoom = async (code: string, playerName: string): Promise<boolean> => {
+  const joinRoom = async (
+    code: string,
+    playerName: string,
+  ): Promise<boolean> => {
     try {
       const roomResponse = await getRoomRequest(code);
       const playerResponse = await joinRoomRequest(code, playerName);

@@ -49,6 +49,7 @@ function WaitingRoomContent() {
     console.log("[waitingroom] isVotingStarted mudou:", room?.isVotingStarted);
 
     if (room?.isVotingStarted) {
+      console.log("[waitingroom] navegando para /votar");
       navigate("/votar");
     }
   }, [room?.isVotingStarted, navigate]);

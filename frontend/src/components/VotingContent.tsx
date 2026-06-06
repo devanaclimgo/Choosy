@@ -15,6 +15,7 @@ function VotingContent() {
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
 
   const foodOptions = getFoodOptions();
+  console.log("[voting] renderizou");
 
   useEffect(() => {
     if (foodOptions.length > 0) return;
