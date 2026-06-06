@@ -58,7 +58,7 @@ export interface GameContextType {
   setCurrentPlayer: (player: Player | null) => void;
   room: Room | null;
   setRoom: (room: Room | null) => void;
-  createRoom: (playerName: string) => void;
+  createRoom: (playerName: string) => Promise<string>;
   joinRoom: (code: string, playerName: string) => Promise<boolean>;
   startVoting: () => void;
   submitVote: (foodId: string, vote: boolean) => void;
@@ -261,6 +261,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     setCurrentPlayer(player);
     setRoom(room);
+
+    return roomResponse.code;
   };
 
   const joinRoom = async (
