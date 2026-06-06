@@ -14,6 +14,7 @@ function App() {
       <Route path="/criar-sala" element={<CreateRoomPage />} />
       <Route path="/entrar" element={<JoinRoom />} />
       <Route path="/votar" element={<VotingPage />} />
+      <Route path="/sala-de-espera/:code" element={<WaitingRoomPage />} />
       <Route path="/sala-de-espera" element={<WaitingRoomPage />} />
       <Route path="/aguardando" element={<WaitingPage />} />
       <Route path="/resultado" element={<ResultsPage />} />
