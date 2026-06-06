@@ -16,12 +16,9 @@ function JoinRoomContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (code.trim() && name.trim()) {
-      const success = await joinRoom(
-        code.trim().toUpperCase(),
-        name.trim(),
-      );
+      const success = await joinRoom(code.trim().toUpperCase(), name.trim());
       if (success) {
-        navigate("/sala-de-espera");
+        navigate(`/sala-de-espera/${code.trim().toUpperCase()}`);
       } else {
         setError("Sala não encontrada. Verifique o código e tente novamente.");
       }
