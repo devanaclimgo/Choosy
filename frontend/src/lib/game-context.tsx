@@ -194,8 +194,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!roomRef.current) return;
+      if (!roomRef.current) {
+        console.log("[polling] roomRef é null, pulando");
+
+        return;
+      }
+      console.log("[polling] buscando sala:", roomRef.current.code);
+
       getRoomRequest(roomRef.current.code).then((updatedRoom) => {
+        console.log("[polling] resposta:", updatedRoom.status);
+
         try {
           setRoom((current) => {
             if (!current) return current;

@@ -15,9 +15,15 @@ function WaitingRoomContent() {
   const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
 
   useEffect(() => {
+    console.log("[waitingroom] room:", room, "code da URL:", code);
+
     if (room || !code) return;
+    console.log("[waitingroom] sem room no contexto, buscando pela URL...");
+
     getRoomRequest(code)
       .then((data) => {
+        console.log("[waitingroom] sala encontrada:", data);
+
         setRoom({
           id: data.id.toString(),
           ownerId: data.owner_id.toString(),
@@ -32,10 +38,15 @@ function WaitingRoomContent() {
           isVotingStarted: data.status === "voting",
         });
       })
-      .catch(() => navigate("/"));
+      .catch((err) => {
+        console.log("[waitingroom] erro ao buscar sala, indo pra home:", err);
+        navigate("/");
+      });
   }, [code, room]);
 
   useEffect(() => {
+    console.log("[waitingroom] isVotingStarted mudou:", room?.isVotingStarted);
+
     if (room?.isVotingStarted) {
       navigate("/votar");
     }
