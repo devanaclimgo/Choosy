@@ -219,16 +219,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    getFoodOptionsRequest().then((data: any[]) => {
-      setFoodOptions(
-        data.map((f: any) => ({
-          id: f.id.toString(),
-          name: f.name,
-          image: f.image_url,
-          category: f.category,
-        })),
-      );
-    });
+    getFoodOptionsRequest()
+      .then((data) => {
+        setFoodOptions(
+          data.map((f: any) => ({
+            id: f.id.toString(),
+            name: f.name,
+            image: f.image_url,
+            category: f.category,
+          })),
+        );
+      })
+      .catch((err) => {
+        console.error("[foods] erro", err);
+      });
   }, []);
 
   const createRoom = async (playerName: string) => {
@@ -373,7 +377,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         submitVote,
         resetVoting,
         getFoodOptions,
-        getResults
+        getResults,
       }}
     >
       {children}
