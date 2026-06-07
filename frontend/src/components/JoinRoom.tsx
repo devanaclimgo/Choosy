@@ -12,16 +12,27 @@ function JoinRoomContent() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { joinRoom } = useGame();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (code.trim() && name.trim()) {
+
+    if (!code.trim() || !name.trim() || isLoading) return;
+
+    try {
+      setIsLoading(true);
+
       const success = await joinRoom(code.trim().toUpperCase(), name.trim());
+
       if (success) {
         navigate(`/sala-de-espera/${code.trim().toUpperCase()}`);
       } else {
         setError("Sala não encontrada. Verifique o código e tente novamente.");
+        setIsLoading(false);
       }
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
     }
   };
 
@@ -110,10 +121,21 @@ function JoinRoomContent() {
             <Button
               type="submit"
               size="lg"
-              disabled={!code.trim() || code.length < 6 || !name.trim()}
-              className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={
+                !code.trim() || code.length < 6 || !name.trim() || isLoading
+              }
+              className="w-full h-14 flex items-center justify-center gap-2 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all"
             >
-              Entrar
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="flex items-center justify-center gap-2">
+                    Entrando...
+                  </span>
+                </>
+              ) : (
+                "Entrar"
+              )}
             </Button>
 
             <AnimatePresence>
