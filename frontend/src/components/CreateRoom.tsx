@@ -11,13 +11,21 @@ function CreateRoomContent() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const { createRoom } = useGame();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (name.trim()) {
-      const code =await createRoom(name.trim());
+    if (!name.trim() || isLoading) return;
+
+    try {
+      setIsLoading(true);
+
+      const code = await createRoom(name.trim());
       navigate(`/sala-de-espera/${code}`);
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
     }
   };
 
@@ -84,10 +92,19 @@ function CreateRoomContent() {
             <Button
               type="submit"
               size="lg"
-              disabled={!name.trim()}
-              className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!name.trim() || isLoading}
+              className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
             >
-              Continuar
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="flex items-center justify-center gap-2">
+                    Criando sala...
+                  </span>
+                </>
+              ) : (
+                "Continuar"
+              )}
             </Button>
           </motion.form>
         </div>
