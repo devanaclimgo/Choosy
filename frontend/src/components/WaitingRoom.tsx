@@ -10,6 +10,7 @@ function WaitingRoomContent() {
   const { room, currentPlayer, startVoting } = useGame();
   const [copied, setCopied] = useState(false);
   const [showMinPlayersWarning, setShowMinPlayersWarning] = useState(false);
+  const [isStartingVoting, setIsStartingVoting] = useState(false);
 
   const handleCopyCode = async () => {
     if (room?.code) {
@@ -19,14 +20,24 @@ function WaitingRoomContent() {
     }
   };
 
-  const handleStartVoting = () => {
+  const handleStartVoting = async () => {
+    if (isStartingVoting) return;
+
     if (allPlayers.length < 2) {
       setShowMinPlayersWarning(true);
       setTimeout(() => setShowMinPlayersWarning(false), 3000);
       return;
     }
-    startVoting();
-    navigate("/votar");
+
+    try {
+      setIsStartingVoting(true);
+
+      await startVoting();
+      navigate("/votar");
+    } catch (error) {
+      console.error(error);
+      setIsStartingVoting(false);
+    }
   };
 
   // Redirect if no room
@@ -209,9 +220,19 @@ function WaitingRoomContent() {
             <Button
               size="lg"
               onClick={handleStartVoting}
-              className="w-full h-14 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all"
+              disabled={isStartingVoting}
+              className="w-full h-14 flex items-center justify-center gap-2 text-lg font-semibold rounded-2xl gradient-primary border-0 text-primary-foreground shadow-lg hover:shadow-xl transition-all"
             >
-              Começar votação
+              {isStartingVoting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="flex items-center justify-center gap-2">
+                    Iniciando...
+                  </span>
+                </>
+              ) : (
+                "Começar votação"
+              )}
             </Button>
           ) : (
             <div className="flex flex-col items-center gap-3">
