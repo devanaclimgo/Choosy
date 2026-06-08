@@ -9,6 +9,7 @@
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Status](https://img.shields.io/badge/status-live-success?style=for-the-badge)
 
 </div>
 
@@ -60,6 +61,25 @@ Fast, fun, chaotic, and actually useful.
 - Optimized for mobile usage
 
 
+## 📸 Screenshots
+
+### Home
+
+![Home](./docs/home.png)
+
+### Waiting Room
+
+![Waiting Room](./docs/waiting_room.png)
+
+### Voting
+
+![Voting](./docs/voting.png)
+
+### Results
+
+![Results](./docs/results.png)
+
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -90,6 +110,34 @@ Fast, fun, chaotic, and actually useful.
 -	RESTful API structure (/api/v1)
 - Polling-based real-time updates
 - Monorepo organization
+
+```
+Frontend (React)
+       ↓
+REST API (Rails)
+       ↓
+Database (PostgreSQL)
+```
+
+
+### Real-Time Strategy
+
+The application currently uses polling to keep rooms synchronized.
+
+Clients periodically request room status updates, allowing players to see joins, voting progress, and results without requiring page refreshes.
+
+Future versions may migrate to WebSockets using ActionCable.
+
+
+## Technical Challenges
+
+During development, some interesting problems included:
+
+- Synchronizing multiplayer room state
+- Preventing duplicate votes
+- Calculating group consensus fairly
+- Managing polling without excessive API requests
+- Handling room lifecycle and player sessions
 
 
 ## 🚀 Getting Started
@@ -213,7 +261,7 @@ Choosy uses a percentage-based voting system.
 
 If a food reaches at least:
 
-*70\% \text{ of players liked the same food}*
+*If 70% or more of players like the same food, the app declares it as the group match.*
 
 then the app declares it as the group match.
 
@@ -241,6 +289,21 @@ POST /api/v1/votes
 
 ```bash
 GET /api/v1/food_options
+```
+
+## Environment Variables
+
+Frontend
+
+```env
+VITE_API_URL=http://localhost:3000/api/v1
+```
+
+Backend
+
+```env
+FRONTEND_URL=http://localhost:5173
+DATABASE_URL=...
 ```
 
 
@@ -271,10 +334,18 @@ Inspired by:
 - Food delivery apps
 - Gen Z social interfaces
 
+## 🔗 Live Demo
+
+Frontend:
+https://choosy-production.up.railway.app/
+
+Backend API:
+https://choosy-back-production.up.railway.app/
+
 
 ## 👩‍💻 Creator
 
-**Ana Clara** - The mind behind Âncora
+**Ana Clara** - Creator of Choosy
 
   - 📧 **Email**: anaclimgo@gmail.com
   - 🔗 **GitHub**: [@devanaclimgo](https://github.com/devanaclimgo)
