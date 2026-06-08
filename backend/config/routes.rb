@@ -18,4 +18,12 @@ Rails.application.routes.draw do
       resources :food_options, only: [:index]
     end
   end
+
+  match "*path", via: [:options], to: proc {
+    [200, {
+      "Access-Control-Allow-Origin" => ENV.fetch("FRONTEND_URL", "*"),
+      "Access-Control-Allow-Methods" => "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers" => "Origin, Content-Type, Accept, Authorization",
+    }, [""]]
+  }
 end
